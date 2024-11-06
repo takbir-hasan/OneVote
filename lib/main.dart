@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        theme: ThemeData(primarySwatch: Colors.blue),
+        theme: ThemeData(primarySwatch: Colors.amber),
         darkTheme: ThemeData(primarySwatch: Colors.grey),
         debugShowCheckedModeBanner: false,
         home: const HomeActivity());
@@ -32,7 +32,7 @@ class HomeActivity extends StatelessWidget {
         title: const Text("OneVote"),
         titleSpacing: 20,
         // centerTitle: true,
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: Colors.amber,
         // toolbarHeight: 60,
         // toolbarOpacity: 1,
         // elevation: 0,
@@ -66,41 +66,51 @@ class HomeActivity extends StatelessWidget {
             DrawerHeader(
                 padding: const EdgeInsets.all(0),
                 child: UserAccountsDrawerHeader(
-                  decoration: const BoxDecoration(color: Colors.lightBlue),
+                  decoration: const BoxDecoration(color: Colors.amber),
                   accountName: const Text(
                     "Sajid Hasan Takbir",
                     style: TextStyle(color: Colors.black),
                   ),
                   accountEmail: const Text("takbirhasan274gmail.com"),
-                  currentAccountPicture: Image.network(
-                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfGQ_rvk0VOH1B9_6ikH75UH4jiEUc8uNYOQ&s"),
+                  currentAccountPicture: ClipOval(
+                  child: Image.network(
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfGQ_rvk0VOH1B9_6ikH75UH4jiEUc8uNYOQ&s",
+                    width: 80.0,  // Adjust the size of the image
+                    height: 80.0, // Adjust the size of the image
+                    fit: BoxFit.cover,  // Ensures the image covers the circle
+                  ),
+                  ),
                   onDetailsPressed: () {
                     mySnackBar("Profile Page", context);
                   },
                 )),
             ListTile(
-              leading: const Icon(Icons.contact_page),
+              leading: const Icon(Icons.contact_page,color:Colors.amber),
               title: const Text("Contact"),
               onTap: () {
                 mySnackBar("Contact Page", context);
               },
             ),
             ListTile(
-              leading: const Icon(Icons.person),
+              leading: const Icon(Icons.person, color: Colors.amber),
               title: const Text("Profile"),
               onTap: () {
                 mySnackBar("Profile Page", context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfilePage()),
+                );
               },
             ),
             ListTile(
-              leading: const Icon(Icons.email),
+              leading: const Icon(Icons.email, color: Colors.amber),
               title: const Text("Email"),
               onTap: () {
                 mySnackBar("Contact Page", context);
               },
             ),
             ListTile(
-              leading: const Icon(Icons.feedback),
+              leading: const Icon(Icons.feedback, color: Colors.amber),
               title: const Text("Feedback"),
               onTap: () {
                 mySnackBar("Feedback Page", context);
@@ -162,7 +172,7 @@ class HomeActivity extends StatelessWidget {
 
         floatingActionButton: FloatingActionButton(
             elevation: 10,
-            backgroundColor: Colors.lightBlue,
+            backgroundColor: Colors.amber,
             onPressed: () {
               mySnackBar("I am floating action button", context);
             },
@@ -175,6 +185,8 @@ class HomeActivity extends StatelessWidget {
                 icon: Icon(Icons.message), label: "Contact"),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
           ],
+          selectedItemColor: Colors.amber,
+          unselectedItemColor: Colors.amber,
           onTap: (int index) {
             if (index == 0) {
               mySnackBar("Home Button", context);
@@ -199,8 +211,8 @@ class HomeActivity extends StatelessWidget {
           margin: const EdgeInsets.all(10),
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-              color: Colors.redAccent,
-              border: Border.all(color: Colors.black, width: 6)),
+              color: Colors.white,
+              border: Border.all(color: Colors.black, width: 0)),
           child: Image.network(
               "https://pbs.twimg.com/media/El9bi-8VkAINwqY?format=jpg&name=large"),
         ),

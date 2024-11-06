@@ -8,11 +8,13 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Profile"),
+        backgroundColor: Colors.amber,
       ),
       body: const Center(
         child: Text("Welcome to your Profile!"),
       ),
     );
+    
   }
 }
 

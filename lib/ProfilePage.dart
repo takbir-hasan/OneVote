@@ -8,7 +8,7 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Profile"),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.lightBlue,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -18,22 +18,20 @@ class ProfilePage extends StatelessWidget {
             children: [
               // Profile Image
               Center(
-                child: ClipOval(
-                  child: Container(
-                    width: 100.0, // Adjust the width and height as needed
-                    height: 100.0,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(
-                          'https://img.freepik.com/free-photo/horizontal-portrait-smiling-happy-young-pleasant-looking-female-wears-denim-shirt-stylish-glasses-with-straight-blonde-hair-expresses-positiveness-poses_176420-13176.jpg?ga=GA1.2.209838246.1722743839&semt=ais_hybrid',
-                        ),
-                        fit: BoxFit.cover,
+                  child: ClipOval(
+                child: Container(
+                  width: 100.0, // Adjust the width and height as needed
+                  height: 100.0,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(
+                        'https://img.freepik.com/free-photo/horizontal-portrait-smiling-happy-young-pleasant-looking-female-wears-denim-shirt-stylish-glasses-with-straight-blonde-hair-expresses-positiveness-poses_176420-13176.jpg?ga=GA1.2.209838246.1722743839&semt=ais_hybrid',
                       ),
+                      fit: BoxFit.cover,
                     ),
                   ),
-                )
-
-              ),
+                ),
+              )),
               const SizedBox(height: 16.0),
 
               // Profile Name Card
@@ -57,12 +55,13 @@ class ProfilePage extends StatelessWidget {
                     "Mobile",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  subtitle: Text("+1234567890"), // Placeholder for mobile number
+                  subtitle:
+                      Text("+1234567890"), // Placeholder for mobile number
                 ),
               ),
               const SizedBox(height: 10.0),
 
-               // Email Card
+              // Email Card
               const Card(
                 color: Colors.white,
                 child: ListTile(
@@ -70,7 +69,8 @@ class ProfilePage extends StatelessWidget {
                     "Email",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  subtitle: Text("galib.cse@gmail.com"), // Placeholder for mobile number
+                  subtitle: Text(
+                      "galib.cse@gmail.com"), // Placeholder for mobile number
                 ),
               ),
               const SizedBox(height: 20.0),
@@ -86,9 +86,11 @@ class ProfilePage extends StatelessWidget {
                         // Add logout functionality here
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF1877F2), // Facebook blue color
+                        backgroundColor: Color(0xFF1877F2),
+                        // Facebook blue color
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8), // Adjust the rounding
+                          borderRadius:
+                              BorderRadius.circular(8), // Adjust the rounding
                         ),
                       ),
                       icon: const Icon(
@@ -112,9 +114,11 @@ class ProfilePage extends StatelessWidget {
                         // Add Edit Profile functionality here
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF1877F2), // Facebook blue color
+                        backgroundColor: Color(0xFF1877F2),
+                        // Facebook blue color
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8), // Adjust the rounding
+                          borderRadius:
+                              BorderRadius.circular(8), // Adjust the rounding
                         ),
                       ),
                       icon: const Icon(
@@ -133,7 +137,7 @@ class ProfilePage extends StatelessWidget {
               const SizedBox(height: 20.0),
 
               // Voting Service Table
-             const Center(
+              const Center(
                 child: Text(
                   "Voting Services",
                   textAlign: TextAlign.center,
@@ -187,7 +191,10 @@ class ProfilePage extends StatelessWidget {
                         ),
                         Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text('200 BDT', textAlign: TextAlign.center,),
+                          child: Text(
+                            '200 BDT',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ],
                     ),
@@ -203,7 +210,10 @@ class ProfilePage extends StatelessWidget {
                         ),
                         Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text('100 BDT', textAlign: TextAlign.center,),
+                          child: Text(
+                            '100 BDT',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ],
                     ),
@@ -219,7 +229,10 @@ class ProfilePage extends StatelessWidget {
                         ),
                         Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text('100 BDT', textAlign: TextAlign.center,),
+                          child: Text(
+                            '100 BDT',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ],
                     ),
@@ -235,7 +248,10 @@ class ProfilePage extends StatelessWidget {
                         ),
                         Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text('100 BDT', textAlign: TextAlign.center,),
+                          child: Text(
+                            '100 BDT',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ],
                     ),

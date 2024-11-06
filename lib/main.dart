@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'ProfilePage.dart';
-<<<<<<< Updated upstream
-
-
-=======
 import 'adminprofile.dart';
->>>>>>> Stashed changes
 void main() {
   runApp(const MyApp());
 }
@@ -108,7 +103,6 @@ class HomeActivity extends StatelessWidget {
               },
             ),
             ListTile(
-<<<<<<< Updated upstream
               leading: const Icon(Icons.email, color: Colors.lightBlue),
               title: const Text("Admin"),
               onTap: () {
@@ -116,22 +110,26 @@ class HomeActivity extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.email, color: Colors.lightBlue),
-              title: const Text("About Us"),
-              onTap: () {
-                mySnackBar("about Page", context);
-=======
-              leading: const Icon(Icons.admin_panel_settings, color: Colors.amber),
-              title: const Text("Admin"),
-              onTap: () {
-                mySnackBar("Admin Page", context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AdminProfile()),
-                );
->>>>>>> Stashed changes
-              },
-            ),
+                leading: const Icon(Icons.email, color: Colors.lightBlue),
+                title: const Text("About Us"),
+                onTap: () {
+                  mySnackBar("about Page", context);  // SnackBar for About Us
+                  // The following block seems to be meant for a different ListTile
+                  // So, we should remove or separate the logic
+                },
+              ),
+            ListTile(
+                leading: const Icon(Icons.admin_panel_settings, color: Colors.lightBlue),
+                title: const Text("Admin"),
+                onTap: () {
+                  mySnackBar("Admin Page", context);  // SnackBar for Admin
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AdminProfile()),  // Navigate to AdminProfile page
+                  );
+                },
+              ),
+
           ],
         ),
       ),
@@ -207,9 +205,6 @@ class HomeActivity extends StatelessWidget {
             mySnackBar("Home Button", context);
           }
           if (index == 1) {
-            mySnackBar("Message button clicked", context);
-          }
-          if (index == 2) {
             // Navigate to ProfilePage when the Profile tab is tapped
             Navigator.push(
               context,

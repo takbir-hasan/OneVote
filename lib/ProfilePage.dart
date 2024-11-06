@@ -135,7 +135,7 @@ class ProfilePage extends StatelessWidget {
               ),
 
               const SizedBox(height: 20.0),
-
+              const Divider(height: 10, thickness: 1),
               // Voting Service Table
               const Center(
                 child: Text(

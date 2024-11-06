@@ -4,7 +4,7 @@ import 'adminfeedback.dart';
 class AdminProfile extends StatelessWidget {
   final double totalIncome;
 
-  const AdminProfile({Key? key, this.totalIncome = 0.0}) : super(key: key);
+  const AdminProfile({super.key, this.totalIncome = 0.0});
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +67,7 @@ class AdminProfile extends StatelessWidget {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF1877F2),
+                        backgroundColor: const Color(0xFF1877F2),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
@@ -89,7 +89,7 @@ class AdminProfile extends StatelessWidget {
                         // Add total income functionality here
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF1877F2),
+                        backgroundColor: const Color(0xFF1877F2),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
@@ -113,7 +113,7 @@ class AdminProfile extends StatelessWidget {
                     // Add logout functionality here
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF1877F2),
+                    backgroundColor: const Color(0xFF1877F2),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),

@@ -86,7 +86,7 @@ class ProfilePage extends StatelessWidget {
                         // Add logout functionality here
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF1877F2),
+                        backgroundColor: const Color(0xFF1877F2),
                         // Facebook blue color
                         shape: RoundedRectangleBorder(
                           borderRadius:
@@ -114,7 +114,7 @@ class ProfilePage extends StatelessWidget {
                         // Add Edit Profile functionality here
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF1877F2),
+                        backgroundColor: const Color(0xFF1877F2),
                         // Facebook blue color
                         shape: RoundedRectangleBorder(
                           borderRadius:

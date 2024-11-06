@@ -30,7 +30,7 @@ class AdminFeedBack extends StatelessWidget {
             const SizedBox(height: 20),
             ListView.builder(
               shrinkWrap: true, // This ensures that the ListView doesn't try to take all available space
-              physics: NeverScrollableScrollPhysics(), // Prevents scrolling on ListView
+              physics: const NeverScrollableScrollPhysics(), // Prevents scrolling on ListView
               itemCount: feedbackList.length,
               itemBuilder: (context, index) {
                 return Card(
@@ -83,7 +83,7 @@ class AdminFeedBack extends StatelessWidget {
                               );
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF1877F2),
+                              backgroundColor: const Color(0xFF1877F2),
                               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),

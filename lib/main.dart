@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'ProfilePage.dart';
 import 'adminprofile.dart';
+import 'AboutUs.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -114,8 +115,10 @@ class HomeActivity extends StatelessWidget {
                 title: const Text("About Us"),
                 onTap: () {
                   mySnackBar("about Page", context);  // SnackBar for About Us
-                  // The following block seems to be meant for a different ListTile
-                  // So, we should remove or separate the logic
+                   Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AboutUsPage()),  // Navigate to AdminProfile page
+                  );
                 },
               ),
             ListTile(

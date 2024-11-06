@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class Signup extends StatelessWidget {
-  const Signup({super.key});
+class Login extends StatelessWidget {
+  const Login({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Sign Up"),
+          title: const Text("Login"),
           backgroundColor: Colors.lightBlue,
         ),
         body: const Center(
@@ -15,7 +15,7 @@ class Signup extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "Sign Up",
+                "Login",
                 style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
               )
             ],

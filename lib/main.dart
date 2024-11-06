@@ -1,8 +1,21 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'ProfilePage.dart';
+import 'Signup.dart';
+import 'Login.dart';
 
-
-void main() {
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+        options: const FirebaseOptions(
+            apiKey: "AIzaSyDR52B_NS2Ac2PWu-f5MLgGnIPMp0E7sN0",
+            appId: "onevote-2024.firebaseapp.com",
+            messagingSenderId: "821427940120",
+            projectId: "onevote-2024"));
+  }
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -45,7 +58,6 @@ class HomeActivity extends StatelessWidget {
                 mySnackBar("Searching...", context);
               },
               icon: const Icon(Icons.search)),
-
 
           IconButton(
               onPressed: () {
@@ -92,7 +104,7 @@ class HomeActivity extends StatelessWidget {
                 mySnackBar("Profile Page", context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ProfilePage()),
+                  MaterialPageRoute(builder: (context) => const Login()),
                 );
               },
             ),

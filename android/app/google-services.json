@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "821427940120",
+    "project_id": "onevote-2024",
+    "storage_bucket": "onevote-2024.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:821427940120:android:7b0bfbf35db62ce03b0c6d",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyWbm_ZgbSZmwlM2weDLHxjow9MgPxezU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

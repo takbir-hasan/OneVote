@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'ProfilePage.dart';
+<<<<<<< Updated upstream
 
 
+=======
+import 'adminprofile.dart';
+>>>>>>> Stashed changes
 void main() {
   runApp(const MyApp());
 }
@@ -104,6 +108,7 @@ class HomeActivity extends StatelessWidget {
               },
             ),
             ListTile(
+<<<<<<< Updated upstream
               leading: const Icon(Icons.email, color: Colors.lightBlue),
               title: const Text("Admin"),
               onTap: () {
@@ -115,6 +120,16 @@ class HomeActivity extends StatelessWidget {
               title: const Text("About Us"),
               onTap: () {
                 mySnackBar("about Page", context);
+=======
+              leading: const Icon(Icons.admin_panel_settings, color: Colors.amber),
+              title: const Text("Admin"),
+              onTap: () {
+                mySnackBar("Admin Page", context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AdminProfile()),
+                );
+>>>>>>> Stashed changes
               },
             ),
           ],

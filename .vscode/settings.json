@@ -1,4 +1,8 @@
 {
       "java.compile.nullAnalysis.mode": "automatic",
+<<<<<<< Updated upstream
       "cmake.sourceDirectory": "C:/Users/takbi/OneDrive/Desktop/Git Clone/OneVote/linux"
+=======
+      "cmake.sourceDirectory": "C:/Users/saniu/Flutter App Project/OneVote/linux"
+>>>>>>> Stashed changes
 }

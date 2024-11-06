@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'ProfilePage.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -160,31 +160,36 @@ class HomeActivity extends StatelessWidget {
       // ),
       // bottomNavigationBar: (),
 
-      floatingActionButton: FloatingActionButton(
-          elevation: 10,
-          backgroundColor: Colors.lightBlue,
-          onPressed: () {
-            mySnackBar("I am floating action button", context);
+        floatingActionButton: FloatingActionButton(
+            elevation: 10,
+            backgroundColor: Colors.lightBlue,
+            onPressed: () {
+              mySnackBar("I am floating action button", context);
+            },
+            child: const Icon(Icons.add)),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: 0,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.message), label: "Contact"),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+          ],
+          onTap: (int index) {
+            if (index == 0) {
+              mySnackBar("Home Button", context);
+            }
+            if (index == 1) {
+              mySnackBar("Message button clicked", context);
+            }
+            if (index == 2) {
+              // Navigate to ProfilePage when the Profile tab is tapped
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfilePage()),
+              );
+            }
           },
-          child: const Icon(Icons.add)),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.message), label: "Contact"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
-        ],
-        onTap: (int index) {
-          if (index == 0) {
-            mySnackBar("Home Button", context);
-          }
-          if (index == 1) {
-            mySnackBar("Message button clicked", context);
-          }
-          if (index == 2) {
-            mySnackBar("Your Profile", context);
-          }
-        },
       ),
       body: Center(
         child: Container(

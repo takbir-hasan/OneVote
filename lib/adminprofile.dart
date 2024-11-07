@@ -11,8 +11,10 @@ class AdminProfile extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Admin Profile"),
+        backgroundColor: Colors.lightBlue,
       ),
-      body: SingleChildScrollView( // Wrap in SingleChildScrollView
+      body: SingleChildScrollView(
+        // Wrap in SingleChildScrollView
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -36,7 +38,8 @@ class AdminProfile extends StatelessWidget {
               const SizedBox(height: 16),
               Card(
                 elevation: 2,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)),
                 child: const Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Row(
@@ -61,9 +64,10 @@ class AdminProfile extends StatelessWidget {
                     child: ElevatedButton.icon(
                       onPressed: () {
                         // Add feedback functionality here
-                         Navigator.push(
+                        Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => AdminFeedBack()),
+                          MaterialPageRoute(
+                              builder: (context) => AdminFeedBack()),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -148,7 +152,9 @@ class AdminProfile extends StatelessWidget {
                           padding: EdgeInsets.all(8.0),
                           child: Text(
                             'Name',
-                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -156,7 +162,9 @@ class AdminProfile extends StatelessWidget {
                           padding: EdgeInsets.all(8.0),
                           child: Text(
                             'Date',
-                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -164,7 +172,9 @@ class AdminProfile extends StatelessWidget {
                           padding: EdgeInsets.all(8.0),
                           child: Text(
                             'Earning',
-                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -174,31 +184,24 @@ class AdminProfile extends StatelessWidget {
                       children: [
                         Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text('Md Saniul Basir Saz', textAlign: TextAlign.center,),
+                          child: Text(
+                            'Md Saniul Basir Saz',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                         Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text('Jan 1, 2023', textAlign: TextAlign.center,),
+                          child: Text(
+                            'Jan 1, 2023',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                         Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text('200 BDT', textAlign: TextAlign.center,),
-                        ),
-                      ],
-                    ),
-                    TableRow(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('Sajid Hasan Takbir', textAlign: TextAlign.center,),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('Feb 15, 2024', textAlign: TextAlign.center,),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('100 BDT', textAlign: TextAlign.center,),
+                          child: Text(
+                            '200 BDT',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ],
                     ),
@@ -206,15 +209,24 @@ class AdminProfile extends StatelessWidget {
                       children: [
                         Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text('Syed Md. Galib', textAlign: TextAlign.center,),
+                          child: Text(
+                            'Sajid Hasan Takbir',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                         Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text('Feb 15, 2024', textAlign: TextAlign.center,),
+                          child: Text(
+                            'Feb 15, 2024',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                         Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text('100 BDT', textAlign: TextAlign.center,),
+                          child: Text(
+                            '100 BDT',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ],
                     ),
@@ -222,15 +234,49 @@ class AdminProfile extends StatelessWidget {
                       children: [
                         Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text('Monishankar Haldar', textAlign: TextAlign.center,),
+                          child: Text(
+                            'Syed Md. Galib',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                         Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text('Feb 15, 2024', textAlign: TextAlign.center,),
+                          child: Text(
+                            'Feb 15, 2024',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                         Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text('100 BDT', textAlign: TextAlign.center,),
+                          child: Text(
+                            '100 BDT',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                    TableRow(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            'Monishankar Haldar',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            'Feb 15, 2024',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            '100 BDT',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ],
                     ),

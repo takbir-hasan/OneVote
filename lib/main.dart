@@ -1,20 +1,13 @@
-// import 'package:firebase_core/firebase_core.dart';
-// import 'package:flutter/foundation.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'ProfilePage.dart';
 import 'Login.dart';
+import 'AboutUs.dart';
+import 'adminprofile.dart';
 
-main() {
-  // WidgetsFlutterBinding.ensureInitialized();
-  // if (kIsWeb) {
-  //   await Firebase.initializeApp(
-  //       options: const FirebaseOptions(
-  //           apiKey: "AIzaSyDR52B_NS2Ac2PWu-f5MLgGnIPMp0E7sN0",
-  //           appId: "onevote-2024.firebaseapp.com",
-  //           messagingSenderId: "821427940120",
-  //           projectId: "onevote-2024"));
-  // }
-  // await Firebase.initializeApp();
+main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -118,14 +111,22 @@ class HomeActivity extends StatelessWidget {
               leading: const Icon(Icons.email, color: Colors.lightBlue),
               title: const Text("Admin"),
               onTap: () {
-                mySnackBar("admin Page", context);
+                // mySnackBar("admin Page", context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AdminProfile()),
+                );
               },
             ),
             ListTile(
               leading: const Icon(Icons.email, color: Colors.lightBlue),
               title: const Text("About Us"),
               onTap: () {
-                mySnackBar("about Page", context);
+                // mySnackBar("about Page", context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AboutUsPage()),
+                );
               },
             ),
           ],

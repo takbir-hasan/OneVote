@@ -4,8 +4,16 @@ import 'FeedbackDetailsPage.dart';
 class AdminFeedBack extends StatelessWidget {
   final List<Map<String, String>> feedbackList = [
     {'name': 'John Doe', 'feedback': 'Great service!', 'date': '2024-11-06'},
-    {'name': 'Jane Smith', 'feedback': 'Could improve response time.', 'date': '2024-11-05'},
-    {'name': 'Alex Johnson', 'feedback': 'Very helpful, thank you!', 'date': '2024-11-04'},
+    {
+      'name': 'Jane Smith',
+      'feedback': 'Could improve response time.',
+      'date': '2024-11-05'
+    },
+    {
+      'name': 'Alex Johnson',
+      'feedback': 'Very helpful, thank you!',
+      'date': '2024-11-04'
+    },
     // Add more feedback items as needed
   ];
 
@@ -16,7 +24,7 @@ class AdminFeedBack extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('User Feedback'),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.lightBlue,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -29,8 +37,10 @@ class AdminFeedBack extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ListView.builder(
-              shrinkWrap: true, // This ensures that the ListView doesn't try to take all available space
-              physics: const NeverScrollableScrollPhysics(), // Prevents scrolling on ListView
+              shrinkWrap: true,
+              // This ensures that the ListView doesn't try to take all available space
+              physics: const NeverScrollableScrollPhysics(),
+              // Prevents scrolling on ListView
               itemCount: feedbackList.length,
               itemBuilder: (context, index) {
                 return Card(
@@ -78,18 +88,21 @@ class AdminFeedBack extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => FeedbackDetailsPage(feedback: feedbackList[index]),
+                                  builder: (context) => FeedbackDetailsPage(
+                                      feedback: feedbackList[index]),
                                 ),
                               );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF1877F2),
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            child: const Text('See Details', style: TextStyle(color: Colors.white)),
+                            child: const Text('See Details',
+                                style: TextStyle(color: Colors.white)),
                           ),
                         ),
                       ],

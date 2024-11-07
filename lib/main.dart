@@ -4,6 +4,8 @@ import 'ProfilePage.dart';
 import 'Login.dart';
 import 'AboutUs.dart';
 import 'adminprofile.dart';
+import 'VotingResultPage.dart';
+import 'Feedback.dart';
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,7 +55,11 @@ class HomeActivity extends StatelessWidget {
 
           IconButton(
               onPressed: () {
-                mySnackBar("Give me feedback", context);
+                // mySnackBar("Give me feedback", context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const FeedbackApp()),
+                );
               },
               icon: const Icon(Icons.feedback)),
         ],
@@ -104,7 +110,11 @@ class HomeActivity extends StatelessWidget {
               leading: const Icon(Icons.feedback, color: Colors.lightBlue),
               title: const Text("Feedback"),
               onTap: () {
-                mySnackBar("Feedback Page", context);
+                // mySnackBar("Feedback Page", context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const FeedbackApp()),
+                );
               },
             ),
             ListTile(

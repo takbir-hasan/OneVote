@@ -101,7 +101,7 @@ class HomeActivity extends StatelessWidget {
               leading: const Icon(Icons.person, color: Colors.lightBlue),
               title: const Text("Profile"),
               onTap: () {
-                mySnackBar("Profile Page", context);
+                // mySnackBar("Profile Page", context);
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const Login()),
@@ -203,10 +203,10 @@ class HomeActivity extends StatelessWidget {
           if (index == 0) {
             mySnackBar("Home Button", context);
           }
+          // if (index == 1) {
+          //   mySnackBar("Message button clicked", context);
+          // }
           if (index == 1) {
-            mySnackBar("Message button clicked", context);
-          }
-          if (index == 2) {
             // Navigate to ProfilePage when the Profile tab is tapped
             Navigator.push(
               context,

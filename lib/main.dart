@@ -1,20 +1,20 @@
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'ProfilePage.dart';
 import 'Login.dart';
 
-Future main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  if (kIsWeb) {
-    await Firebase.initializeApp(
-        options: const FirebaseOptions(
-            apiKey: "AIzaSyDR52B_NS2Ac2PWu-f5MLgGnIPMp0E7sN0",
-            appId: "onevote-2024.firebaseapp.com",
-            messagingSenderId: "821427940120",
-            projectId: "onevote-2024"));
-  }
-  await Firebase.initializeApp();
+main() {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // if (kIsWeb) {
+  //   await Firebase.initializeApp(
+  //       options: const FirebaseOptions(
+  //           apiKey: "AIzaSyDR52B_NS2Ac2PWu-f5MLgGnIPMp0E7sN0",
+  //           appId: "onevote-2024.firebaseapp.com",
+  //           messagingSenderId: "821427940120",
+  //           projectId: "onevote-2024"));
+  // }
+  // await Firebase.initializeApp();
   runApp(const MyApp());
 }
 

@@ -36,6 +36,9 @@ class _SignupState extends State<Signup> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Signup"),
@@ -44,7 +47,12 @@ class _SignupState extends State<Signup> {
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.1,
+              // Horizontal padding as 10% of screen width
+              vertical: screenHeight *
+                  0.02, // Vertical padding as 2% of screen height
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -84,89 +92,50 @@ class _SignupState extends State<Signup> {
                     );
                   },
                   child: CircleAvatar(
-                    radius: 50,
+                    radius: screenWidth * 0.15,
+                    // Adjust size based on screen width
                     backgroundImage: _profileImage != null
                         ? FileImage(
                             _profileImage!) // Display the selected image
-                        : null, // Otherwise, show the camera icon
+                        : null,
+                    // Otherwise, show the camera icon
                     child: _profileImage == null
                         ? const Icon(Icons.camera_alt, size: 50)
                         : null,
                   ),
                 ),
                 const SizedBox(height: 20),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Name',
-                    hintText: 'Enter your full name',
-                    prefixIcon: const Icon(Icons.person),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
+                _buildResponsiveTextField('Name', Icons.person, screenWidth),
                 const SizedBox(height: 20),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    hintText: 'Enter your email',
-                    prefixIcon: const Icon(Icons.email),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
+                _buildResponsiveTextField('Email', Icons.email, screenWidth),
                 const SizedBox(height: 20),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Phone Number',
-                    hintText: 'Enter your phone number',
-                    prefixIcon: const Icon(Icons.phone),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
+                _buildResponsiveTextField(
+                    'Phone Number', Icons.phone, screenWidth),
                 const SizedBox(height: 20),
-                TextField(
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    hintText: 'Enter your password',
-                    prefixIcon: const Icon(Icons.lock),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
+                _buildResponsiveTextField('Password', Icons.lock, screenWidth,
+                    isPassword: true),
                 const SizedBox(height: 20),
-                TextField(
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: 'Confirm Password',
-                    hintText: 'Enter your confirm password',
-                    prefixIcon: const Icon(Icons.lock),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
+                _buildResponsiveTextField(
+                    'Confirm Password', Icons.lock, screenWidth,
+                    isPassword: true),
                 const SizedBox(height: 30),
-                ElevatedButton(
-                  onPressed: () {
-                    // Handle signup action
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 15),
-                    backgroundColor: Colors.blueAccent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                SizedBox(
+                  width: screenWidth * 0.6, // Make button responsive
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Handle signup action
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      backgroundColor: Colors.blueAccent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
-                  ),
-                  child: const Text(
-                    "Signup",
-                    style: TextStyle(fontSize: 18, color: Colors.black),
+                    child: const Text(
+                      "Signup",
+                      style: TextStyle(fontSize: 18, color: Colors.black),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 15),
@@ -182,6 +151,26 @@ class _SignupState extends State<Signup> {
                 ),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Helper method to create responsive TextFields
+  Widget _buildResponsiveTextField(
+      String label, IconData icon, double screenWidth,
+      {bool isPassword = false}) {
+    return SizedBox(
+      width: screenWidth * 0.8, // TextField width as 80% of screen width
+      child: TextField(
+        obscureText: isPassword,
+        decoration: InputDecoration(
+          labelText: label,
+          hintText: 'Enter your $label',
+          prefixIcon: Icon(icon),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
           ),
         ),
       ),

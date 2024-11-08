@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'ProfilePage.dart';
 import 'Login.dart';
 import 'AboutUs.dart';
@@ -22,12 +23,66 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(primarySwatch: Colors.lightBlue),
         darkTheme: ThemeData(primarySwatch: Colors.grey),
         debugShowCheckedModeBanner: false,
-        home: const HomeActivity());
+        home: HomeActivity());
   }
 }
 
 class HomeActivity extends StatelessWidget {
-  const HomeActivity({super.key});
+
+  // Dummy data for elections
+  final List<Map<String, dynamic>> electionData = [
+    {
+      "name": "Presidential Election",
+      "date": "10 Nov 2024",
+      "description": "The presidential election for this term.",
+      "status": "Running",
+      "remainingTime": const Duration(hours: 2),
+    },
+    {
+      "name": "Parliamentary Election",
+      "date": "20 Dec 2024",
+      "description": "Election for the national parliament seats.",
+      "status": "Upcoming",
+      "remainingTime": const Duration(days: 5),
+    },
+    {
+    "name": "Presidential Election",
+    "date": "10 Nov 2024",
+    "description": "The presidential election for this term.",
+    "status": "Running",
+    "remainingTime": const Duration(hours: 2),
+    },
+    {
+      "name": "Parliamentary Election",
+      "date": "20 Dec 2024",
+      "description": "Election for the national parliament seats.",
+      "status": "Upcoming",
+      "remainingTime": const Duration(days: 5),
+    },
+    {
+      "name": "Local Council Election",
+      "date": "5 Jan 2025",
+      "description": "Election for local government councils.",
+      "status": "Completed",
+      "remainingTime": const Duration(days: 0), // Already completed
+    },
+    {
+      "name": "State Election",
+      "date": "15 Feb 2025",
+      "description": "Election for state-level legislative assemblies.",
+      "status": "Upcoming",
+      "remainingTime": const Duration(days: 80),
+    },
+    {
+      "name": "Senate Election",
+      "date": "1 Mar 2024",
+      "description": "Election for the national Senate members.",
+      "status": "Completed",
+      "remainingTime": const Duration(days: -1), // Already completed
+    },
+  ];
+  HomeActivity({Key? key}) : super(key: key);
+
 
   mySnackBar(message, context) {
     ScaffoldMessenger.of(context)
@@ -225,18 +280,98 @@ class HomeActivity extends StatelessWidget {
           }
         },
       ),
-      body: Center(
-        child: Container(
-          height: 300,
-          width: 300,
-          alignment: Alignment.center,
-          margin: const EdgeInsets.all(10),
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: Colors.black, width: 0)),
-          child: Image.network(
-              "https://pbs.twimg.com/media/El9bi-8VkAINwqY?format=jpg&name=large"),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: electionData.map((election) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => VotingResultPage(
+                        electionName: election["name"],
+                        electionDate: election["date"],
+                        electionDescription: election["description"],
+                        electionStatus: election["status"],
+                      ),
+                    ),
+                  );
+                },
+                child: Card(
+                  margin: const EdgeInsets.all(10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                elevation: 4,
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              election["name"],
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const Icon(
+                              Icons.how_to_vote,
+                              color: Colors.blue,
+                              size: 24,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          "Date: ${election['date']}",
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          "Description: ${election['description']}",
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                        const SizedBox(height: 15),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Status: ${election['status']}",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: election['status'] == 'Running'
+                                    ? Colors.green
+                                    : Colors.orange,
+                              ),
+                            ),
+                            CountdownTimer(
+                              endTime: DateTime.now()
+                                  .add(election['remainingTime'])
+                                  .millisecondsSinceEpoch,
+                              textStyle: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
         ),
       ),
     );

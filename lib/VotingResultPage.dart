@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:fl_chart/fl_chart.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class VotingResultPage extends StatelessWidget {
   final String electionName;
@@ -22,7 +22,7 @@ class VotingResultPage extends StatelessWidget {
         title: Text(electionName),
         backgroundColor: Colors.lightBlue,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,16 +114,105 @@ class VotingResultPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            // // Percentage details
-            // const Column(
-            //   crossAxisAlignment: CrossAxisAlignment.start,
-            //   children: [
-            //     Text("Option A: 40%", style: TextStyle(fontSize: 16, color: Colors.blue)),
-            //     Text("Option B: 30%", style: TextStyle(fontSize: 16, color: Colors.red)),
-            //     Text("Option C: 20%", style: TextStyle(fontSize: 16, color: Colors.green)),
-            //     Text("Option D: 10%", style: TextStyle(fontSize: 16, color: Colors.yellow)),
-            //    ],
-            //   ),
+            // Percentage details
+            const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Option A: 40%", style: TextStyle(fontSize: 16, color: Colors.blue)),
+                Text("Option B: 30%", style: TextStyle(fontSize: 16, color: Colors.red)),
+                Text("Option C: 20%", style: TextStyle(fontSize: 16, color: Colors.green)),
+                Text("Option D: 10%", style: TextStyle(fontSize: 16, color: Colors.yellow)),
+               ],
+              ),
+            const SizedBox(height: 20),
+            const Text(
+              "Bar Chart View:",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: 200,
+              child: BarChart(
+                BarChartData(
+                  alignment: BarChartAlignment.spaceAround,
+                  maxY: 50,
+                  barTouchData: BarTouchData(enabled: false),
+                  titlesData: FlTitlesData(
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: false,
+                        getTitlesWidget: (context, value) => Text(
+                          value.toString(),
+                          style: const TextStyle(color: Colors.black, fontSize: 12),
+                        ),
+                        reservedSize: 32,
+                      ),
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 32,
+                        getTitlesWidget: (value, meta) {
+                          switch (value.toInt()) {
+                            case 0:
+                              return const Text(
+                                'Option A',
+                                style: TextStyle(color: Colors.black, fontSize: 12),
+                              );
+                            case 1:
+                              return const Text(
+                                'Option B',
+                                style: TextStyle(color: Colors.black, fontSize: 12),
+                              );
+                            case 2:
+                              return const Text(
+                                'Option C',
+                                style: TextStyle(color: Colors.black, fontSize: 12),
+                              );
+                            case 3:
+                              return const Text(
+                                'Option D',
+                                style: TextStyle(color: Colors.black, fontSize: 12),
+                              );
+                            default:
+                              return const Text('');
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                  barGroups: [
+                    BarChartGroupData(x: 0, barRods: [
+                      BarChartRodData(
+                        toY: 40,
+                        color: Colors.blue,
+                        width: 15,
+                      ),
+                    ]),
+                    BarChartGroupData(x: 1, barRods: [
+                      BarChartRodData(
+                        toY: 30,
+                        color: Colors.red,
+                        width: 15,
+                      ),
+                    ]),
+                    BarChartGroupData(x: 2, barRods: [
+                      BarChartRodData(
+                        toY: 20,
+                        color: Colors.green,
+                        width: 15,
+                      ),
+                    ]),
+                    BarChartGroupData(x: 3, barRods: [
+                      BarChartRodData(
+                        toY: 10,
+                        color: Colors.yellow,
+                        width: 15,
+                      ),
+                    ]),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),

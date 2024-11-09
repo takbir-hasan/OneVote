@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'main.dart';
 
 class FeedbackApp extends StatelessWidget {
   const FeedbackApp({Key? key}) : super(key: key);
@@ -39,9 +40,18 @@ class _FeedbackFormState extends State<FeedbackForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Feedback Form'),
+        title: const Text('Write Feedback'),
         backgroundColor: Colors.lightBlue,
         centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomeActivity()),
+            );
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

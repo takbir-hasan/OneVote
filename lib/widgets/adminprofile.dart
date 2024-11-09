@@ -42,14 +42,35 @@ class AdminProfile extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8)),
                 child: const Padding(
                   padding: EdgeInsets.all(16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  child: Column(
+                    // Use Column instead of Row
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    // Align the content in the center horizontally
                     children: [
-                      Icon(Icons.email, color: Colors.blue),
-                      SizedBox(width: 8),
-                      Text(
-                        'admin@example.com',
-                        style: TextStyle(fontSize: 16),
+                      Row(
+                        // Use Row for each email address and icon
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.person, color: Colors.blue),
+                          SizedBox(width: 8),
+                          Text(
+                            'Sajid Hasan Takbir',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10), // Add space between the emails
+                      Row(
+                        // Another Row for the second email
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.email, color: Colors.blue),
+                          SizedBox(width: 8),
+                          Text(
+                            'admin@example.com',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
                       ),
                     ],
                   ),

@@ -7,6 +7,7 @@ import 'AboutUs.dart';
 import 'adminprofile.dart';
 import 'VotingResultPage.dart';
 import 'Feedback.dart';
+import '../auths/userAuthentication.dart';
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +29,6 @@ class MyApp extends StatelessWidget {
 }
 
 class HomeActivity extends StatelessWidget {
-
   // Dummy data for elections
   final List<Map<String, dynamic>> electionData = [
     {
@@ -46,11 +46,11 @@ class HomeActivity extends StatelessWidget {
       "remainingTime": const Duration(days: 5),
     },
     {
-    "name": "Presidential Election",
-    "date": "10 Nov 2024",
-    "description": "The presidential election for this term.",
-    "status": "Running",
-    "remainingTime": const Duration(hours: 2),
+      "name": "Presidential Election",
+      "date": "10 Nov 2024",
+      "description": "The presidential election for this term.",
+      "status": "Running",
+      "remainingTime": const Duration(hours: 2),
     },
     {
       "name": "Parliamentary Election",
@@ -81,8 +81,8 @@ class HomeActivity extends StatelessWidget {
       "remainingTime": const Duration(days: -1), // Already completed
     },
   ];
-  HomeActivity({Key? key}) : super(key: key);
 
+  HomeActivity({Key? key}) : super(key: key);
 
   mySnackBar(message, context) {
     ScaffoldMessenger.of(context)
@@ -157,7 +157,8 @@ class HomeActivity extends StatelessWidget {
                 // mySnackBar("Profile Page", context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Login()),
+                  MaterialPageRoute(
+                      builder: (context) => const AuthenticationPage()),
                 );
               },
             ),
@@ -197,57 +198,6 @@ class HomeActivity extends StatelessWidget {
           ],
         ),
       ),
-      // endDrawer: Drawer(
-      //   child: ListView(
-      //     children: [
-      //       DrawerHeader(
-      //           padding: const EdgeInsets.all(0),
-      //           child: UserAccountsDrawerHeader(
-      //             decoration: const BoxDecoration(color: Colors.lightBlue),
-      //             accountName: const Text(
-      //               "Sajid Hasan Takbir",
-      //               style: TextStyle(color: Colors.black),
-      //             ),
-      //             accountEmail: const Text("takbirhasan274gmail.com"),
-      //             currentAccountPicture: Image.network(
-      //                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfGQ_rvk0VOH1B9_6ikH75UH4jiEUc8uNYOQ&s"),
-      //             onDetailsPressed: () {
-      //               mySnackBar("Profile Page", context);
-      //             },
-      //           )),
-      //       ListTile(
-      //         leading: const Icon(Icons.contact_page),
-      //         title: const Text("Contact"),
-      //         onTap: () {
-      //           mySnackBar("Contact Page", context);
-      //         },
-      //       ),
-      //       ListTile(
-      //         leading: const Icon(Icons.person),
-      //         title: const Text("Profile"),
-      //         onTap: () {
-      //           mySnackBar("Profile Page", context);
-      //         },
-      //       ),
-      //       ListTile(
-      //         leading: const Icon(Icons.email),
-      //         title: Text("Email"),
-      //         onTap: () {
-      //           mySnackBar("Contact Page", context);
-      //         },
-      //       ),
-      //       ListTile(
-      //         leading: const Icon(Icons.feedback),
-      //         title: Text("Feedback"),
-      //         onTap: () {
-      //           mySnackBar("Feedback Page", context);
-      //         },
-      //       ),
-      //     ],
-      //   ),
-      // ),
-      // bottomNavigationBar: (),
-
       floatingActionButton: FloatingActionButton(
           elevation: 10,
           backgroundColor: Colors.lightBlue,
@@ -266,7 +216,11 @@ class HomeActivity extends StatelessWidget {
         unselectedItemColor: Colors.blueGrey,
         onTap: (int index) {
           if (index == 0) {
-            mySnackBar("Home Button", context);
+            // mySnackBar("Home Button", context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomeActivity()),
+            );
           }
           // if (index == 1) {
           //   mySnackBar("Message button clicked", context);
@@ -275,7 +229,8 @@ class HomeActivity extends StatelessWidget {
             // Navigate to ProfilePage when the Profile tab is tapped
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const ProfilePage()),
+              MaterialPageRoute(
+                  builder: (context) => const AuthenticationPage()),
             );
           }
         },
@@ -303,7 +258,7 @@ class HomeActivity extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                elevation: 4,
+                  elevation: 4,
                   child: Padding(
                     padding: const EdgeInsets.all(15),
                     child: Column(
@@ -331,7 +286,7 @@ class HomeActivity extends StatelessWidget {
                           "Date: ${election['date']}",
                           style: const TextStyle(
                             fontSize: 16,
-                            color: Colors.grey,
+                            color: Colors.black,
                           ),
                         ),
                         const SizedBox(height: 10),

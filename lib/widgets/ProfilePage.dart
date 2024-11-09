@@ -1,14 +1,29 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../widgets/Login.dart'; // Your Login Page
+import 'main.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // FirebaseAuth instance for sign-out
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Profile"),
         backgroundColor: Colors.lightBlue,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomeActivity()),
+            );
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -32,6 +47,7 @@ class ProfilePage extends StatelessWidget {
                   ),
                 ),
               )),
+
               const SizedBox(height: 16.0),
 
               // Profile Name Card
@@ -69,8 +85,8 @@ class ProfilePage extends StatelessWidget {
                     "Email",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  subtitle: Text(
-                      "galib.cse@gmail.com"), // Placeholder for mobile number
+                  subtitle:
+                      Text("galib.cse@gmail.com"), // Placeholder for email
                 ),
               ),
               const SizedBox(height: 20.0),
@@ -82,8 +98,24 @@ class ProfilePage extends StatelessWidget {
                   // Logout Button
                   Center(
                     child: ElevatedButton.icon(
-                      onPressed: () {
-                        // Add logout functionality here
+                      onPressed: () async {
+                        try {
+                          // Sign out the user
+                          await _auth.signOut();
+
+                          // After sign out, navigate to login page
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Login()),
+                          );
+                        } catch (e) {
+                          // Handle any errors
+                          print("Error signing out: $e");
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Logout failed!")),
+                          );
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF1877F2),

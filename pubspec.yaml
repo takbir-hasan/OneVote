@@ -42,6 +42,7 @@ dependencies:
   flutter_countdown_timer: ^4.1.0
   cloud_firestore: ^5.4.5
   crypto: ^3.0.1   # For hashing passwords
+  firebase_storage: ^12.3.5
 
 dev_dependencies:
   flutter_test:

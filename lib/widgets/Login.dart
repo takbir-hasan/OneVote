@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
 import 'package:flutter/material.dart';
 import 'Signup.dart';
 import '../auths/userAuthentication.dart';
@@ -34,6 +35,8 @@ class _LoginState extends State<Login> {
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>(); // To track the form state
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore =
+      FirebaseFirestore.instance; // Firestore instance
   bool _isLoading = false; // To manage loading state
 
   // Firebase login function
@@ -50,13 +53,37 @@ class _LoginState extends State<Login> {
           password: _passwordController.text,
         );
 
-        // Navigate to another screen after login
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  const AuthenticationPage()), // Replace with your home page
-        );
+        // Fetch the user document from Firestore
+        DocumentSnapshot userDoc = await _firestore
+            .collection(
+                'users') // Make sure the users collection exists in Firestore
+            .doc(userCredential.user?.uid) // Fetch by UID
+            .get();
+
+        if (userDoc.exists) {
+          // Get the role from the user document
+          String role = userDoc.get('role');
+
+          // Check if the role is 'user'
+          if (role == 'user') {
+            // Navigate to profile page if role is 'user'
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const AuthenticationPage()),
+            );
+          } else {
+            // Show an error if the role is not 'user'
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Wrong email or password!")),
+            );
+          }
+        } else {
+          // If the user document doesn't exist
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("User not found")),
+          );
+        }
       } catch (e) {
         // Handle login error
         print("Login error: $e");
@@ -89,7 +116,7 @@ class _LoginState extends State<Login> {
     } catch (e) {
       print("Error sending reset email: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("PLease enter a valid mail.")),
+        const SnackBar(content: Text("Please enter a valid email.")),
       );
     }
   }

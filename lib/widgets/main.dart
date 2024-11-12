@@ -1,6 +1,8 @@
+import 'package:OneVote/widgets/adminLoginPage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
+import '../auths/adminAuthentication.dart';
 import 'ProfilePage.dart';
 import 'Login.dart';
 import 'AboutUs.dart';
@@ -181,7 +183,8 @@ class HomeActivity extends StatelessWidget {
                 // mySnackBar("admin Page", context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const AdminProfile()),
+                  MaterialPageRoute(
+                      builder: (context) => const AdminAuthenticationPage()),
                 );
               },
             ),

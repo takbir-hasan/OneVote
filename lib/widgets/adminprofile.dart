@@ -1,3 +1,5 @@
+import 'package:OneVote/widgets/adminLoginPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'adminfeedback.dart';
 
@@ -14,11 +16,11 @@ class AdminProfile extends StatelessWidget {
         backgroundColor: Colors.lightBlue,
       ),
       body: SingleChildScrollView(
-        // Wrap in SingleChildScrollView
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
+              // Profile picture and information
               Center(
                 child: ClipOval(
                   child: Container(
@@ -43,12 +45,9 @@ class AdminProfile extends StatelessWidget {
                 child: const Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Column(
-                    // Use Column instead of Row
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    // Align the content in the center horizontally
                     children: [
                       Row(
-                        // Use Row for each email address and icon
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.person, color: Colors.blue),
@@ -59,9 +58,8 @@ class AdminProfile extends StatelessWidget {
                           ),
                         ],
                       ),
-                      SizedBox(height: 10), // Add space between the emails
+                      SizedBox(height: 10),
                       Row(
-                        // Another Row for the second email
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.email, color: Colors.blue),
@@ -81,76 +79,84 @@ class AdminProfile extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Center(
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        // Add feedback functionality here
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AdminFeedBack()),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1877F2),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      // Navigate to the Feedback page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AdminFeedBack()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF1877F2),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      icon: const Icon(
-                        Icons.feedback,
-                        color: Colors.white,
-                      ),
-                      label: const Text(
-                        "See Feedback",
-                        style: TextStyle(color: Colors.white),
-                      ),
+                    ),
+                    icon: const Icon(
+                      Icons.feedback,
+                      color: Colors.white,
+                    ),
+                    label: const Text(
+                      "See Feedback",
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                   const SizedBox(width: 16),
-                  Center(
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        // Add total income functionality here
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1877F2),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      // Handle total income functionality here
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF1877F2),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      icon: const Icon(
-                        Icons.payments,
-                        color: Colors.white,
-                      ),
-                      label: Text(
-                        "Total: ৳${totalIncome.toStringAsFixed(2)}",
-                        style: const TextStyle(color: Colors.white),
-                      ),
+                    ),
+                    icon: const Icon(
+                      Icons.payments,
+                      color: Colors.white,
+                    ),
+                    label: Text(
+                      "Total: ৳${totalIncome.toStringAsFixed(2)}",
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 16),
-              Center(
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    // Add logout functionality here
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF1877F2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+              ElevatedButton.icon(
+                onPressed: () async {
+                  // Perform Firebase sign-out
+                  try {
+                    await FirebaseAuth.instance.signOut();
+                    // Show a toast to confirm sign-out
+                    // Redirect to login page after sign-out
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Admin()),
+                    );
+                  } catch (e) {
+                    print("Error signing out: $e");
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Logout failed!")),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1877F2),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  icon: const Icon(
-                    Icons.logout,
-                    color: Colors.white,
-                  ),
-                  label: const Text(
-                    "Logout",
-                    style: TextStyle(color: Colors.white),
-                  ),
+                ),
+                icon: const Icon(
+                  Icons.logout,
+                  color: Colors.white,
+                ),
+                label: const Text(
+                  "Logout",
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
               const Divider(height: 20, thickness: 1),
@@ -167,7 +173,7 @@ class AdminProfile extends StatelessWidget {
                   border: TableBorder.all(),
                   children: const [
                     TableRow(
-                      decoration: BoxDecoration(color: (Color(0xFF1877F2))),
+                      decoration: BoxDecoration(color: Color(0xFF1877F2)),
                       children: [
                         Padding(
                           padding: EdgeInsets.all(8.0),
@@ -232,56 +238,6 @@ class AdminProfile extends StatelessWidget {
                           padding: EdgeInsets.all(8.0),
                           child: Text(
                             'Sajid Hasan Takbir',
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            'Feb 15, 2024',
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            '100 BDT',
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
-                    ),
-                    TableRow(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            'Syed Md. Galib',
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            'Feb 15, 2024',
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            '100 BDT',
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
-                    ),
-                    TableRow(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            'Monishankar Haldar',
                             textAlign: TextAlign.center,
                           ),
                         ),

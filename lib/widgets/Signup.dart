@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'dart:convert'; // Import for base64 encoding
-import 'Login.dart';
+import 'Login.dart'; // Import your Login screen
 
 // import 'HomePage.dart'; // Assume you have a HomePage to navigate to
 import '../controllers/userController.dart';
@@ -81,15 +81,9 @@ class _SignupState extends State<Signup> {
           phone: phone,
           password: password,
           profileImageBase64: _profileImageBase64,
-          // Pass the base64 string
+          role: 'user',
           context: context,
         );
-
-        // Once signup is successful, navigate to another page (e.g., HomePage)
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => const HomePage()),
-        // );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Error: ${e.toString()}")),
@@ -176,7 +170,7 @@ class _SignupState extends State<Signup> {
                   const SizedBox(height: 20),
                   _buildTextField(_confirmPasswordController,
                       'Confirm Password', Icons.lock, true,
-                      confirmPassword: _passwordController.text),
+                      confirmPasswordController: _passwordController),
                   const SizedBox(height: 30),
                   SizedBox(
                     width: screenWidth * 0.6,
@@ -222,7 +216,7 @@ class _SignupState extends State<Signup> {
       {bool validateEmail = false,
       bool validatePhone = false,
       int minLength = 0,
-      String confirmPassword = ''}) {
+      TextEditingController? confirmPasswordController}) {
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
@@ -234,18 +228,29 @@ class _SignupState extends State<Signup> {
       ),
       validator: (value) {
         if (value == null || value.isEmpty) return 'Please enter your $label';
+
+        // Email Validation
         if (validateEmail && !RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
           return 'Enter a valid email address';
         }
+
+        // Phone Number Validation
         if (validatePhone && !RegExp(r'^\d{10,15}$').hasMatch(value)) {
           return 'Enter a valid phone number';
         }
+
+        // Password Length Validation
         if (minLength > 0 && value.length < minLength) {
           return 'Password must be at least $minLength characters';
         }
-        if (confirmPassword.isNotEmpty && value != confirmPassword) {
-          return 'Passwords do not match';
+
+        // Confirm Password Validation
+        if (confirmPasswordController != null) {
+          if (value != confirmPasswordController.text) {
+            return 'Passwords do not match';
+          }
         }
+
         return null;
       },
     );

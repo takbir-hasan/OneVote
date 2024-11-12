@@ -5,6 +5,7 @@ class UserModel {
   final String password;
   final String confirmPassword;
   final String photo; // Base64 encoded image string
+  final String role;
 
   UserModel({
     required this.name,
@@ -13,6 +14,7 @@ class UserModel {
     required this.password,
     required this.confirmPassword,
     required this.photo,
+    required this.role,
   });
 
   // Convert UserModel to map for Firestore storage
@@ -24,6 +26,7 @@ class UserModel {
       'password': password,
       'confirmPassword': confirmPassword,
       'photo': photo, // Store the base64 image
+      'role': role,
     };
   }
 
@@ -35,7 +38,9 @@ class UserModel {
       number: map['number'],
       password: map['password'],
       confirmPassword: map['confirmPassword'],
-      photo: map['photo'], // Retrieve the base64 image
+      photo: map['photo'],
+      // Retrieve the base64 image
+      role: map['role'],
     );
   }
 }

@@ -22,6 +22,7 @@ class UserController {
     required String password,
     required String profileImageBase64, // Accept base64 image string
     required BuildContext context,
+    required String role,
   }) async {
     try {
       // Hash the password
@@ -41,7 +42,9 @@ class UserController {
         number: phone,
         password: hashedPassword,
         confirmPassword: hashedPassword,
-        photo: profileImageBase64, // Store base64 image here
+        photo: profileImageBase64,
+        // Store base64 image here
+        role: 'user',
       );
 
       // print("Saving user to Firestore with photo: ${user.photo}"); // Debugging line

@@ -101,6 +101,7 @@ class _LoginState extends State<Login> {
   // Handle forgot password
   Future<void> _resetPassword() async {
     String email = _emailController.text.trim();
+
     if (email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please enter your email address")),
@@ -109,14 +110,43 @@ class _LoginState extends State<Login> {
     }
 
     try {
-      await _auth.sendPasswordResetEmail(email: email);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Password reset email sent")),
-      );
+      // Step 1: Check if the email exists in Firestore
+      QuerySnapshot snapshot = await _firestore
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .limit(1)
+          .get();
+
+      // Step 2: If the email exists in Firestore, check the user's role
+      if (snapshot.docs.isNotEmpty) {
+        var userDoc = snapshot.docs.first;
+        String role = userDoc['role'] ?? '';
+
+        if (role == 'user') {
+          // Step 3: If the role is 'user', send the password reset email
+          await _auth.sendPasswordResetEmail(email: email);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Password reset email sent")),
+          );
+        } else {
+          // If the role is not 'user', show an error message
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("No user found with this email.")),
+          );
+        }
+      } else {
+        // If no user is found with the given email in Firestore
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("No user found with this email.")),
+        );
+      }
     } catch (e) {
-      print("Error sending reset email: $e");
+      print("Error: $e");
+
+      // Handle Firebase errors (like network issues, etc.)
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter a valid email.")),
+        const SnackBar(
+            content: Text("An error occurred. Please try again later.")),
       );
     }
   }

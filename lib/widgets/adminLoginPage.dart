@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../auths/adminAuthentication.dart';
@@ -15,6 +16,9 @@ class _LoginState extends State<Admin> {
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final UserAuthentication _userAuth = UserAuthentication();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore =
+      FirebaseFirestore.instance; // Firestore instance
   bool _isLoading = false;
   String _errorMessage = '';
 
@@ -62,6 +66,7 @@ class _LoginState extends State<Admin> {
   // Handle password reset
   Future<void> _resetPassword() async {
     String email = _emailController.text.trim();
+
     if (email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please enter your email address")),
@@ -69,14 +74,44 @@ class _LoginState extends State<Admin> {
       return;
     }
 
-    String? errorMessage = await _userAuth.resetPassword(email);
-    if (errorMessage != null) {
+    try {
+      // Step 1: Check if the email exists in Firestore
+      QuerySnapshot snapshot = await _firestore
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .limit(1)
+          .get();
+
+      // Step 2: If the email exists in Firestore, check the user's role
+      if (snapshot.docs.isNotEmpty) {
+        var userDoc = snapshot.docs.first;
+        String role = userDoc['role'] ?? '';
+
+        if (role == 'admin') {
+          // Step 3: If the role is 'user', send the password reset email
+          await _auth.sendPasswordResetEmail(email: email);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Password reset email sent")),
+          );
+        } else {
+          // If the role is not 'user', show an error message
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("No user found with this email.")),
+          );
+        }
+      } else {
+        // If no user is found with the given email in Firestore
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("No user found with this email.")),
+        );
+      }
+    } catch (e) {
+      print("Error: $e");
+
+      // Handle Firebase errors (like network issues, etc.)
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $errorMessage")),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Password reset email sent")),
+        const SnackBar(
+            content: Text("An error occurred. Please try again later.")),
       );
     }
   }
@@ -88,7 +123,7 @@ class _LoginState extends State<Admin> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Admin"),
+        title: const Text("Admin Login"),
         backgroundColor: Colors.lightBlue,
       ),
       body: Center(

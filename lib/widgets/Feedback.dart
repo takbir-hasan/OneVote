@@ -1,23 +1,13 @@
+// feedback_form.dart
+
 import 'package:flutter/material.dart';
+import '../controllers/feedbackController.dart';
 import 'main.dart';
-
-class FeedbackApp extends StatelessWidget {
-  const FeedbackApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: FeedbackForm(),
-    );
-  }
-}
 
 class FeedbackForm extends StatefulWidget {
   const FeedbackForm({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _FeedbackFormState createState() => _FeedbackFormState();
 }
 
@@ -27,13 +17,19 @@ class _FeedbackFormState extends State<FeedbackForm> {
   final _emailController = TextEditingController();
   final _feedbackController = TextEditingController();
 
-  void _submitFeedback() {
-    if (_formKey.currentState!.validate()) {
-      // Here you can send the data to the server or display a success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Feedback Submitted Successfully!")),
-      );
-    }
+  // Initialize the controller before the widget builds
+  late final FeedbackController _controller = FeedbackController(
+    nameController: _nameController,
+    emailController: _emailController,
+    feedbackController: _feedbackController,
+  );
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _feedbackController.dispose();
+    super.dispose();
   }
 
   @override
@@ -105,7 +101,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
               ),
               const SizedBox(height: 20.0),
               ElevatedButton.icon(
-                onPressed: _submitFeedback,
+                onPressed: () => _controller.submitFeedback(_formKey, context),
                 label: const Text("Submit Feedback"),
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,

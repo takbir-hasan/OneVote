@@ -115,7 +115,7 @@ class HomeActivity extends StatelessWidget {
                 // mySnackBar("Give me feedback", context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const FeedbackApp()),
+                  MaterialPageRoute(builder: (context) => const FeedbackForm()),
                 );
               },
               icon: const Icon(Icons.feedback)),
@@ -171,7 +171,7 @@ class HomeActivity extends StatelessWidget {
                 // mySnackBar("Feedback Page", context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const FeedbackApp()),
+                  MaterialPageRoute(builder: (context) => const FeedbackForm()),
                 );
               },
             ),

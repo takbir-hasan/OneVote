@@ -174,7 +174,8 @@ class HomeActivity extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.email, color: Colors.lightBlue),
+              leading: const Icon(Icons.admin_panel_settings_sharp,
+                  color: Colors.lightBlue),
               title: const Text("Admin"),
               onTap: () {
                 // mySnackBar("admin Page", context);
@@ -185,7 +186,7 @@ class HomeActivity extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.email, color: Colors.lightBlue),
+              leading: const Icon(Icons.info, color: Colors.lightBlue),
               title: const Text("About Us"),
               onTap: () {
                 // mySnackBar("about Page", context);

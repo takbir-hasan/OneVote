@@ -1,3 +1,4 @@
+import 'package:OneVote/widgets/Notifaction.dart';
 import 'package:OneVote/widgets/adminLoginPage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'adminprofile.dart';
 import 'VotingResultPage.dart';
 import 'Feedback.dart';
 import '../auths/userAuthentication.dart';
+import 'package:OneVote/widgets/SplashScreen.dart';
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +28,13 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(primarySwatch: Colors.lightBlue),
         darkTheme: ThemeData(primarySwatch: Colors.grey),
         debugShowCheckedModeBanner: false,
-        home: HomeActivity());
+        // home: HomeActivity());
+        initialRoute: '/splash',
+      routes: {
+        '/splash': (context) => const SplashScreen(),
+        '/home': (context) => HomeActivity(), // Your HomeActivity
+      },
+       );
   }
 }
 
@@ -102,6 +110,18 @@ class HomeActivity extends StatelessWidget {
         // toolbarHeight: 60,
         // toolbarOpacity: 1,
         // elevation: 0,
+          // backgroundColor: Colors.transparent, // Transparent AppBar
+          // elevation: 0, // Remove shadow
+          // flexibleSpace: Container(
+          //   decoration: const BoxDecoration(
+          //     image: DecorationImage(
+          //       image: NetworkImage(
+          //         'https://img.freepik.com/premium-vector/halftone-gradient-background-with-dots-abstract-purple-dotted-pop-art-pattern-comic-style_515038-12692.jpg?ga=GA1.1.1545834930.1731245301&semt=ais_hybrid', // Replace with your image URL
+          //       ),
+          //       fit: BoxFit.cover, // Make the image cover the entire AppBar
+          //     ),
+          //   ),
+          // ),
         actions: [
           // IconButton(onPressed: () {}, icon: const Icon(Icons.comment)),
           IconButton(
@@ -109,6 +129,15 @@ class HomeActivity extends StatelessWidget {
                 mySnackBar("Searching...", context);
               },
               icon: const Icon(Icons.search)),
+          IconButton(
+              onPressed: () {
+                mySnackBar("Notification", context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const NotificationPage()),
+                );
+              },
+              icon: const Icon(Icons.notification_important)),
 
           IconButton(
               onPressed: () {

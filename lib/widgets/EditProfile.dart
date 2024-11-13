@@ -68,8 +68,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   // Pick an image from the gallery
-  Future<void> _pickImage() async {
-    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+  Future<void> _pickImage(ImageSource source) async {
+    final XFile? pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
       setState(() {
         _imageFile = File(pickedFile.path);
@@ -79,7 +79,37 @@ class _EditProfilePageState extends State<EditProfilePage> {
       _convertImageToBase64();
     }
   }
-
+  
+ // Show dialog to choose camera or gallery
+  void _showImageSourceDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Choose Image Source'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: Icon(Icons.camera_alt),
+              title: Text('Camera'),
+              onTap: () {
+                Navigator.of(context).pop(); // Close dialog
+                _pickImage(ImageSource.camera);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.photo),
+              title: Text('Gallery'),
+              onTap: () {
+                Navigator.of(context).pop(); // Close dialog
+                _pickImage(ImageSource.gallery);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
   // Convert image file to Base64 string
   Future<void> _convertImageToBase64() async {
     if (_imageFile != null) {
@@ -156,7 +186,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         child: Column(
                           children: [
                             GestureDetector(
-                              onTap: _pickImage,
+                              onTap:  _showImageSourceDialog,
                               child: CircleAvatar(
                                 radius: 50,
                                 backgroundColor: Colors.grey[200],

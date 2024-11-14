@@ -23,8 +23,10 @@ class _NotificationPageState extends State<NotificationPage> {
       return {
         'title': data['title'],
         'description': data['description'],
-        'date': (data['date'] as Timestamp).toDate(), // Convert Timestamp to DateTime
-        'icon': Icons.notifications, // Placeholder icon
+        'date': (data['date'] as Timestamp).toDate(),
+        // Convert Timestamp to DateTime
+        'icon': Icons.notifications,
+        // Placeholder icon
       };
     }).toList();
 
@@ -43,7 +45,7 @@ class _NotificationPageState extends State<NotificationPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notifications'),
-        backgroundColor: const Color(0xFF1877F2),
+        backgroundColor: Colors.lightBlue,
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -108,7 +110,7 @@ class _NotificationPageState extends State<NotificationPage> {
                         ),
                       ],
                     ),
-                    trailing: const Icon(Icons.chevron_right),
+                    // trailing: const Icon(Icons.chevron_right),
                   ),
                 );
               },

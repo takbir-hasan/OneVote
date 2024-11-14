@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'adminLoginPage.dart';
 import 'adminfeedback.dart';
+import 'notice.dart';
 
 class AdminProfile extends StatelessWidget {
   final double totalIncome;
@@ -47,7 +48,9 @@ class AdminProfile extends StatelessWidget {
 
       if (profilePictureUrl.isEmpty) {
         // If photo URL is not found in Firestore, check Firebase Storage
-        final storageRef = FirebaseStorage.instance.ref().child('profile_pictures/${user.uid}.jpg');
+        final storageRef = FirebaseStorage.instance
+            .ref()
+            .child('profile_pictures/${user.uid}.jpg');
         profilePictureUrl = await storageRef.getDownloadURL();
       }
 
@@ -79,7 +82,7 @@ class AdminProfile extends StatelessWidget {
           final userData = snapshot.data;
           final name = userData?['name'] ?? 'Admin Name';
           final email = userData?['email'] ?? 'admin@example.com';
-          // final userProfilePhoto = userData?['photo'] ?? 'No Photo';   
+          // final userProfilePhoto = userData?['photo'] ?? 'No Photo';
 
           return FutureBuilder<String>(
             future: _fetchUserProfilePicture(),
@@ -97,21 +100,24 @@ class AdminProfile extends StatelessWidget {
                     children: [
                       // Profile picture and information
                       Center(
-                    child: ClipOval(
-                      child: Container(
-                        width: 100.0, // Adjust the width and height as needed
-                        height: 100.0,
-                        decoration: BoxDecoration(
-                          image: userProfilePhoto != 'No Photo' 
-                              ? DecorationImage(
-                                  image: MemoryImage(base64Decode(userProfilePhoto)),  // Decode Base64
-                                  fit: BoxFit.cover,
-                                )
-                              : null,  // Handle case when there's no photo
+                        child: ClipOval(
+                          child: Container(
+                            width: 100.0,
+                            // Adjust the width and height as needed
+                            height: 100.0,
+                            decoration: BoxDecoration(
+                              image: userProfilePhoto != 'No Photo'
+                                  ? DecorationImage(
+                                      image: MemoryImage(
+                                          base64Decode(userProfilePhoto)),
+                                      // Decode Base64
+                                      fit: BoxFit.cover,
+                                    )
+                                  : null, // Handle case when there's no photo
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
                       const SizedBox(height: 16),
                       Card(
                         elevation: 2,
@@ -200,40 +206,72 @@ class AdminProfile extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 16),
-                      ElevatedButton.icon(
-                        onPressed: () async {
-                          // Perform Firebase sign-out
-                          try {
-                            await FirebaseAuth.instance.signOut();
-                            // Redirect to login page after sign-out
-                            Navigator.pushReplacement(
-                              // ignore: use_build_context_synchronously
-                              context,
-                              MaterialPageRoute(builder: (context) => const Admin()),
-                            );
-                          } catch (e) {
-                            // print("Error signing out: $e");
-                            // ignore: use_build_context_synchronously
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Logout failed!")),
-                            );
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF1877F2),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 16),
+                          ElevatedButton.icon(
+                            onPressed: () async {
+                              // Perform Firebase sign-out
+                              try {
+                                await FirebaseAuth.instance.signOut();
+                                // Redirect to login page after sign-out
+                                Navigator.pushReplacement(
+                                  // ignore: use_build_context_synchronously
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const Admin()),
+                                );
+                              } catch (e) {
+                                // print("Error signing out: $e");
+                                // ignore: use_build_context_synchronously
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text("Logout failed!")),
+                                );
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            icon: const Icon(
+                              Icons.logout,
+                              color: Colors.white,
+                            ),
+                            label: const Text(
+                              "Logout",
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
-                        ),
-                        icon: const Icon(
-                          Icons.logout,
-                          color: Colors.white,
-                        ),
-                        label: const Text(
-                          "Logout",
-                          style: TextStyle(color: Colors.white),
-                        ),
+                          const SizedBox(width: 16),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => InputPage()),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF1877F2),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            icon: const Icon(
+                              Icons.notification_add,
+                              color: Colors.white,
+                            ),
+                            label: const Text(
+                              "Add Notification",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ],
                       ),
                       const Divider(height: 20, thickness: 1),
                       const Center(
@@ -250,7 +288,8 @@ class AdminProfile extends StatelessWidget {
                           border: TableBorder.all(),
                           children: const [
                             TableRow(
-                              decoration: BoxDecoration(color: Color(0xFF1877F2)),
+                              decoration:
+                                  BoxDecoration(color: Color(0xFF1877F2)),
                               children: [
                                 Padding(
                                   padding: EdgeInsets.all(8.0),

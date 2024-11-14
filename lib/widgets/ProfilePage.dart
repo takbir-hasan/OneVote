@@ -10,19 +10,19 @@ class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   Future<Map<String, dynamic>?> _fetchUserData() async {
-    try{
+    try {
       final user = FirebaseAuth.instance.currentUser;
-      if(user!=null)
-      {
+      if (user != null) {
         //Fetch user data from Firestore
-         DocumentSnapshot<Map<String, dynamic>> userDoc = await FirebaseFirestore
+        DocumentSnapshot<Map<String, dynamic>> userDoc = await FirebaseFirestore
             .instance
-            .collection('users') // Assuming user data is stored in 'users' collection
+            .collection(
+                'users') // Assuming user data is stored in 'users' collection
             .doc(user.uid)
             .get();
         return userDoc.data();
       }
-    } catch(e) {
+    } catch (e) {
       debugPrint("Error fetching user data: $e");
     }
     return null;
@@ -50,15 +50,15 @@ class ProfilePage extends StatelessWidget {
       body: FutureBuilder<Map<String, dynamic>?>(
         future: _fetchUserData(),
         builder: (context, snapshot) {
-          if(snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-           if (snapshot.hasError) {
+          if (snapshot.hasError) {
             return const Center(
               child: Text("Error loading profile data."),
             );
           }
-       if (!snapshot.hasData) {
+          if (!snapshot.hasData) {
             return const Center(
               child: Text("No user data found."),
             );
@@ -66,29 +66,33 @@ class ProfilePage extends StatelessWidget {
 
           final userData = snapshot.data;
           final userName = userData?['name'] ?? 'No Name'; // Set fallback value
-          final userEmail = userData?['email'] ?? 'No Email'; // Set fallback value
-          final userMobile = userData?['number'] ?? 'No Mobile'; // Set fallback value
-          final userProfilePhoto = userData?['photo'] ?? 'No Photo';          
-         
+          final userEmail =
+              userData?['email'] ?? 'No Email'; // Set fallback value
+          final userMobile =
+              userData?['number'] ?? 'No Mobile'; // Set fallback value
+          final userProfilePhoto = userData?['photo'] ?? 'No Photo';
+
           return SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                   // Profile Image
+                  // Profile Image
                   Center(
                     child: ClipOval(
                       child: Container(
                         width: 100.0, // Adjust the width and height as needed
                         height: 100.0,
                         decoration: BoxDecoration(
-                          image: userProfilePhoto != 'No Photo' 
+                          image: userProfilePhoto != 'No Photo'
                               ? DecorationImage(
-                                  image: MemoryImage(base64Decode(userProfilePhoto)),  // Decode Base64
+                                  image: MemoryImage(
+                                      base64Decode(userProfilePhoto)),
+                                  // Decode Base64
                                   fit: BoxFit.cover,
                                 )
-                              : null,  // Handle case when there's no photo
+                              : null, // Handle case when there's no photo
                         ),
                       ),
                     ),
@@ -101,7 +105,8 @@ class ProfilePage extends StatelessWidget {
                     child: ListTile(
                       title: const Text(
                         "Name",
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(userName),
                     ),
@@ -114,7 +119,8 @@ class ProfilePage extends StatelessWidget {
                     child: ListTile(
                       title: const Text(
                         "Mobile",
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(userMobile),
                     ),
@@ -127,7 +133,8 @@ class ProfilePage extends StatelessWidget {
                     child: ListTile(
                       title: const Text(
                         "Email",
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(userEmail),
                     ),
@@ -149,7 +156,8 @@ class ProfilePage extends StatelessWidget {
                               // After sign out, navigate to login page
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (context) => const Login()),
+                                MaterialPageRoute(
+                                    builder: (context) => const Login()),
                               );
                             } catch (e) {
                               // Handle any errors
@@ -160,10 +168,11 @@ class ProfilePage extends StatelessWidget {
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF1877F2),
+                            backgroundColor: Colors.red,
                             // Facebook blue color
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8), // Adjust the rounding
+                              borderRadius: BorderRadius.circular(
+                                  8), // Adjust the rounding
                             ),
                           ),
                           icon: const Icon(
@@ -185,18 +194,20 @@ class ProfilePage extends StatelessWidget {
                         child: ElevatedButton.icon(
                           onPressed: () {
                             // Add Edit Profile functionality here
-                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => EditProfilePage(userData: userData!),
-                                ),
-                              );
-                            },
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    EditProfilePage(userData: userData!),
+                              ),
+                            );
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF1877F2),
                             // Facebook blue color
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8), // Adjust the rounding
+                              borderRadius: BorderRadius.circular(
+                                  8), // Adjust the rounding
                             ),
                           ),
                           icon: const Icon(
@@ -219,7 +230,8 @@ class ProfilePage extends StatelessWidget {
                     child: Text(
                       "Voting Services",
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ),
 
@@ -229,7 +241,8 @@ class ProfilePage extends StatelessWidget {
                       border: TableBorder.all(),
                       children: const [
                         TableRow(
-                          decoration: BoxDecoration(color: Colors.lightBlueAccent),
+                          decoration:
+                              BoxDecoration(color: Colors.lightBlueAccent),
                           children: [
                             Padding(
                               padding: EdgeInsets.all(8.0),

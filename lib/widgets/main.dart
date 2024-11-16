@@ -1,4 +1,5 @@
 import 'package:OneVote/widgets/Notifaction.dart';
+import 'package:OneVote/widgets/PollCreate.dart';
 import 'package:OneVote/widgets/adminLoginPage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import 'VotingResultPage.dart';
 import 'Feedback.dart';
 import '../auths/userAuthentication.dart';
 import 'package:OneVote/widgets/SplashScreen.dart';
+import 'package:OneVote/widgets/ProfilePage.dart';
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -180,6 +182,11 @@ class HomeActivity extends StatelessWidget {
               title: const Text("Create Pole"),
               onTap: () {
                 mySnackBar("pole Page", context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const PollCreatePage()),
+                );
               },
             ),
             ListTile(
@@ -236,7 +243,12 @@ class HomeActivity extends StatelessWidget {
           elevation: 10,
           backgroundColor: Colors.lightBlue,
           onPressed: () {
-            mySnackBar("I am floating action button", context);
+            // mySnackBar("I am floating action button", context);
+             Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const PollCreatePage()),
+                );
           },
           child: const Icon(Icons.add)),
       bottomNavigationBar: BottomNavigationBar(

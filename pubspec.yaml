@@ -43,6 +43,8 @@ dependencies:
   cloud_firestore: ^5.4.5
   crypto: ^3.0.1   # For hashing passwords
   firebase_storage: ^12.3.5
+  csv: ^6.0.0
+  file_picker: ^8.1.4
 
 dev_dependencies:
   flutter_test:

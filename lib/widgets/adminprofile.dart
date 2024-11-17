@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:OneVote/widgets/price.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -166,7 +167,7 @@ class AdminProfile extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => AdminFeedBack()),
+                                    builder: (context) => const AdminFeedBack()),
                               );
                             },
                             style: ElevatedButton.styleFrom(
@@ -212,38 +213,25 @@ class AdminProfile extends StatelessWidget {
                         children: [
                           const SizedBox(height: 16),
                           ElevatedButton.icon(
-                            onPressed: () async {
-                              // Perform Firebase sign-out
-                              try {
-                                await FirebaseAuth.instance.signOut();
-                                // Redirect to login page after sign-out
-                                Navigator.pushReplacement(
-                                  // ignore: use_build_context_synchronously
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const Admin()),
-                                );
-                              } catch (e) {
-                                // print("Error signing out: $e");
-                                // ignore: use_build_context_synchronously
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text("Logout failed!")),
-                                );
-                              }
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Price()),
+                              );
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red,
+                              backgroundColor: const Color(0xFF1877F2),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
                             icon: const Icon(
-                              Icons.logout,
+                              Icons.price_change,
                               color: Colors.white,
                             ),
                             label: const Text(
-                              "Logout",
+                              "Set Price",
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
@@ -272,6 +260,43 @@ class AdminProfile extends StatelessWidget {
                             ),
                           ),
                         ],
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton.icon(
+                        onPressed: () async {
+                          // Perform Firebase sign-out
+                          try {
+                            await FirebaseAuth.instance.signOut();
+                            // Redirect to login page after sign-out
+                            Navigator.pushReplacement(
+                              // ignore: use_build_context_synchronously
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const Admin()),
+                            );
+                          } catch (e) {
+                            // print("Error signing out: $e");
+                            // ignore: use_build_context_synchronously
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text("Logout failed!")),
+                            );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        icon: const Icon(
+                          Icons.logout,
+                          color: Colors.white,
+                        ),
+                        label: const Text(
+                          "Logout",
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                       const Divider(height: 20, thickness: 1),
                       const Center(

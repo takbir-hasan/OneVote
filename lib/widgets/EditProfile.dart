@@ -85,21 +85,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Choose Image Source'),
+        title: const Text('Choose Image Source'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: Icon(Icons.camera_alt),
-              title: Text('Camera'),
+              leading: const Icon(Icons.camera_alt),
+              title: const Text('Camera'),
               onTap: () {
                 Navigator.of(context).pop(); // Close dialog
                 _pickImage(ImageSource.camera);
               },
             ),
             ListTile(
-              leading: Icon(Icons.photo),
-              title: Text('Gallery'),
+              leading: const Icon(Icons.photo),
+              title: const Text('Gallery'),
               onTap: () {
                 Navigator.of(context).pop(); // Close dialog
                 _pickImage(ImageSource.gallery);

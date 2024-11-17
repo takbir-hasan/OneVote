@@ -203,7 +203,7 @@ class _LoginState extends State<Admin> {
                     const SizedBox(height: 15),
                     Text(
                       _errorMessage,
-                      style: TextStyle(color: Colors.red, fontSize: 16),
+                      style: const TextStyle(color: Colors.red, fontSize: 16),
                     ),
                   ],
                   const SizedBox(height: 15),

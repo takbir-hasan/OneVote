@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../models/feedbackModel.dart';
-import '../widgets/Feedback.dart';
 
 class FeedbackController {
   final TextEditingController nameController;

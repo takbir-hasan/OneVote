@@ -1,5 +1,5 @@
+import 'package:OneVote/widgets/adminprofile.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../controllers/notificationController.dart';
 import '../models/notificationModel.dart';
 
@@ -8,6 +8,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -17,6 +19,8 @@ class MyApp extends StatelessWidget {
 }
 
 class InputPage extends StatefulWidget {
+  const InputPage({super.key});
+
   @override
   _InputPageState createState() => _InputPageState();
 }
@@ -56,6 +60,12 @@ class _InputPageState extends State<InputPage> {
         content: Text('Notification uploaded successfully!'),
         backgroundColor: Colors.green,
       ),
+
+    );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => const AdminProfile()),
     );
 
     // Clear the text fields
@@ -83,7 +93,7 @@ class _InputPageState extends State<InputPage> {
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 16), // Spacer between input fields
+            const SizedBox(height: 16), // Spacer between input fields
             // Description input
             TextField(
               controller: descriptionController,
@@ -93,16 +103,16 @@ class _InputPageState extends State<InputPage> {
               ),
               maxLines: 4, // Allow multi-line input
             ),
-            SizedBox(height: 16), // Spacer between input field and button
+            const SizedBox(height: 16), // Spacer between input field and button
             // Centered Submit Button with Blue Color
             Center(
               child: ElevatedButton(
                 onPressed: _submitData,
-                child: Text('Submit'),
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: const Color(0xFF1877F2),
                 ),
+                child: Text('Submit'),
               ),
             ),
           ],

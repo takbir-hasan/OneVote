@@ -31,7 +31,7 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // FirebaseAuth instance for sign-out
-    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final FirebaseAuth auth = FirebaseAuth.instance;
 
     return Scaffold(
       appBar: AppBar(
@@ -151,7 +151,7 @@ class ProfilePage extends StatelessWidget {
                           onPressed: () async {
                             try {
                               // Sign out the user
-                              await _auth.signOut();
+                              await auth.signOut();
 
                               // After sign out, navigate to login page
                               Navigator.pushReplacement(

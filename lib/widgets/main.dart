@@ -1,19 +1,14 @@
 import 'package:OneVote/widgets/Notifaction.dart';
 import 'package:OneVote/widgets/PollCreate.dart';
-import 'package:OneVote/widgets/adminLoginPage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import '../auths/adminAuthentication.dart';
-import 'ProfilePage.dart';
-import 'Login.dart';
 import 'AboutUs.dart';
-import 'adminprofile.dart';
 import 'VotingResultPage.dart';
 import 'Feedback.dart';
 import '../auths/userAuthentication.dart';
 import 'package:OneVote/widgets/SplashScreen.dart';
-import 'package:OneVote/widgets/ProfilePage.dart';
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();

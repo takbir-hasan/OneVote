@@ -1,8 +1,12 @@
 import 'dart:io';
+import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart'; 
 import 'package:csv/csv.dart'; 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uuid/uuid.dart';
 
 class PollCreatePage extends StatefulWidget {
   const PollCreatePage({super.key});
@@ -13,9 +17,9 @@ class PollCreatePage extends StatefulWidget {
 
 class _PollCreatePageState extends State<PollCreatePage> {
   final TextEditingController pollTitleController = TextEditingController();
-  final TextEditingController votingDescriptionController =
-      TextEditingController();
+  final TextEditingController votingDescriptionController = TextEditingController();
   final TextEditingController voterListController = TextEditingController();
+  String? errorMessage;
 
   final ImagePicker _picker = ImagePicker();
 
@@ -31,13 +35,58 @@ class _PollCreatePageState extends State<PollCreatePage> {
 
 
   String? uploadedFileName; // Variable to store the uploaded file name
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  String pricePerVoter = ""; // Variable to store the fetched value.
+
+  @override
+  void initState() {
+    super.initState();
+    fetchPricePerVoter(); // Fetch the data when the widget initializes.
+  }
+
+  Future<void> fetchPricePerVoter() async {
+    try {
+      DocumentSnapshot snapshot =
+          await FirebaseFirestore.instance.collection('prices').doc('current_price').get();
+
+      if (snapshot.exists) {
+        // Check if pricePerVoter exists and is a valid number
+        var price = snapshot['pricePerVoter'];
+        if (price != null) {
+          // If the price is a number, cast it to a string for display
+          setState(() {
+            pricePerVoter = price is num ? price.toString() : "Invalid Value";
+          });
+        } else {
+          setState(() {
+            pricePerVoter = "0"; // Default value if field is missing or null
+          });
+        }
+      } else {
+        setState(() {
+          pricePerVoter = "0"; // Default value if document doesn't exist
+        });
+      }
+    } catch (e) {
+      setState(() {
+        pricePerVoter = "Error: $e"; // Show error message with details
+      });
+    }
+  }
+
+
+
+
 
   void addPosition() {
     setState(() {
       positions.add({
         "positionTitle": "", // Store position title here
         "candidates": [
-          {"name": "", "image": null}
+          {"name": "", "image": null,
+          "voteCount": 0 
+          }
         ]
       });
     });
@@ -61,7 +110,7 @@ class _PollCreatePageState extends State<PollCreatePage> {
     });
   }
 
-  Future<void> pickImage(int positionIndex, int candidateIndex) async {
+    Future<void> pickImage(int positionIndex, int candidateIndex) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -78,9 +127,15 @@ class _PollCreatePageState extends State<PollCreatePage> {
                     source: ImageSource.camera,
                   );
                   if (image != null) {
+                    // Convert the image to Base64
+                    File imgFile = File(image.path);
+                    List<int> imageBytes = await imgFile.readAsBytes();
+                    String base64Image = base64Encode(imageBytes);
+
+                    // Store Base64 string in the image field
                     setState(() {
                       positions[positionIndex]["candidates"][candidateIndex]
-                          ["image"] = File(image.path);
+                          ["image"] = base64Image;  // Store as a string (Base64)
                     });
                   }
                   Navigator.pop(context); // Close the dialog
@@ -94,9 +149,15 @@ class _PollCreatePageState extends State<PollCreatePage> {
                     source: ImageSource.gallery,
                   );
                   if (image != null) {
+                    // Convert the image to Base64
+                    File imgFile = File(image.path);
+                    List<int> imageBytes = await imgFile.readAsBytes();
+                    String base64Image = base64Encode(imageBytes);
+
+                    // Store Base64 string in the image field
                     setState(() {
                       positions[positionIndex]["candidates"][candidateIndex]
-                          ["image"] = File(image.path);
+                          ["image"] = base64Image;  // Store as a string (Base64)
                     });
                   }
                   Navigator.pop(context); // Close the dialog
@@ -109,6 +170,8 @@ class _PollCreatePageState extends State<PollCreatePage> {
     );
   }
 
+
+
   void calculateEmailCount() {
     final emails = voterListController.text.split(',');
     setState(() {
@@ -116,10 +179,19 @@ class _PollCreatePageState extends State<PollCreatePage> {
     });
   }
 
-   Future<void> uploadCSVFile() async {
+
+ 
+
+  // List to hold the voter emails
+    List<String> voterEmails = [];
+  //Function to handle Csv File input
+  Future<void> uploadCSVFile() async {
     // Open file picker to select the CSV file
-    FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['csv']);
-    
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['csv'],
+    );
+
     if (result != null) {
       File file = File(result.files.single.path!);
 
@@ -127,18 +199,23 @@ class _PollCreatePageState extends State<PollCreatePage> {
       String fileContent = await file.readAsString();
       List<List<dynamic>> csvTable = const CsvToListConverter().convert(fileContent);
 
-      // Assuming emails are in the first column
+      // Assuming emails are in the first column (index 0)
       List<String> emails = csvTable.map((row) => row[0].toString()).toList();
 
+      // Update state with the list of emails
       setState(() {
-        emailCount = emails.where((email) => email.trim().isNotEmpty).length;
-        uploadedFileName = result.files.single.name; // Update file name
+        voterEmails = emails.where((email) => email.trim().isNotEmpty).toList();
+        emailCount = voterEmails.length; // Update the email count
       });
+
+      // Update the TextEditingController with the emails (as a comma-separated string)
+      voterListController.text = voterEmails.join(", ");
     } else {
       // User canceled the file picker
       print("No file selected");
     }
   }
+
 
   
   // Function to show Date and Time Picker
@@ -172,6 +249,113 @@ class _PollCreatePageState extends State<PollCreatePage> {
           }
         });
       }
+    }
+  }
+
+ // Function to submit data to Firestore
+  Future<void> submitPoll() async {
+    // Check if required fields are filled
+    if (pollTitleController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Poll Title is required")),
+      );
+      return;
+    }
+
+    if (votingDescriptionController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Voting Description is required")),
+      );
+      return;
+    }
+
+    if (startTime == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Start Time is required")),
+      );
+      return;
+    }
+
+    if (endTime == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("End Time is required")),
+      );
+      return;
+    }
+
+    if (positions.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("At least one position is required")),
+      );
+      return;
+    }
+
+    if (voterListController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Voter list is required")),
+      );
+      return;
+    }
+    // Initialize UUID generator
+    var uuid = const Uuid();
+    // Get the logged-in user's email
+    String createdBy = FirebaseAuth.instance.currentUser?.email ?? "Unknown"; 
+    // Create poll data
+    final pollData = {
+      'pollId': uuid.v4(),  // Generate a unique poll ID
+      'pollTitle': pollTitleController.text,
+      'votingDescription': votingDescriptionController.text,
+      'startTime': startTime,
+      'endTime': endTime,
+      'positions': positions.map((position) {
+        return {
+          'positionTitle': position['positionTitle'],
+          'candidates': position['candidates'].map((candidate) {
+            return {
+              'name': candidate['name'],
+              // ignore: prefer_if_null_operators
+              'image': candidate['image'] != null ? candidate['image'] : null,
+               'voteCount': 0 // Added voteCount with an initial value of 0
+
+            };
+          }).toList(),
+        };
+      }).toList(),
+      // 'voterList': voterListController.text.split(',').map((email) => email.trim()).toList(),
+       // Add voterList with unique IDs for each voter
+      'voterList': voterListController.text.split(',').map((email) {
+        return {
+          'email': email.trim(),
+          'uniqueId': uuid.v4(),  // Generate a unique ID for each voter
+          'hasVoted': false,  // Default to false
+
+        };
+      }).toList(),
+      'createdBy': createdBy,
+      'isPayment': 0,
+    };
+
+    // Save data to Firestore
+    try {
+      await _firestore.collection('polls').add(pollData);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Poll created successfully!"))
+      );
+      // Clear the form after submission
+      pollTitleController.clear();
+      votingDescriptionController.clear();
+      startTimeController.clear();
+      endTimeController.clear();
+      voterListController.clear();
+      setState(() {
+        positions.clear();
+        emailCount = 0;
+        uploadedFileName = null;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Error creating poll. Please try again."))
+      );
     }
   }
 
@@ -285,10 +469,8 @@ class _PollCreatePageState extends State<PollCreatePage> {
                                     positions[positionIndex]["candidates"]
                                                 [candidateIndex]["image"] !=
                                             null
-                                        ? Image.file(
-                                            positions[positionIndex]
-                                                    ["candidates"][candidateIndex]
-                                                ["image"],
+                                        ? Image.memory(
+                                            base64Decode(positions[positionIndex]["candidates"][candidateIndex]["image"]),
                                             height: 40,
                                             width: 40,
                                             fit: BoxFit.cover,
@@ -411,13 +593,19 @@ class _PollCreatePageState extends State<PollCreatePage> {
 
                 Container(
                   alignment: Alignment.center,
-                  child: const Text(
-                    "Per Email 10 Dollars",
-                    style: TextStyle(fontStyle: FontStyle.italic,fontSize: 12.0),
+                  child: Text(
+                    pricePerVoter.isNotEmpty
+                        ? "Per Email $pricePerVoter Dollars"
+                        : "Loading...", // Show "Loading..." while fetching data.
+                    style: const TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontSize: 12.0,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ),
                 const SizedBox(height: 1.0),
+
 
                 Container(
                   alignment: Alignment.center,
@@ -430,7 +618,7 @@ class _PollCreatePageState extends State<PollCreatePage> {
                       ),
                       const SizedBox(width: 8.0), // Add space between the icon and text
                       Text(
-                        "Total Cost: \$${emailCount * 10}",
+                        "Total Cost: \$${(emailCount * (double.tryParse(pricePerVoter) ?? 0.0)).toStringAsFixed(2)}",
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.red, // Set the text color to white
@@ -449,7 +637,7 @@ class _PollCreatePageState extends State<PollCreatePage> {
                     label: "Submit",
                     icon: Icons.send,
                     onPressed: () {
-                      // Submit logic
+                    submitPoll();
                     },
                   ),
                 ),

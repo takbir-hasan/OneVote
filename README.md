@@ -1,4 +1,4 @@
-# flutter_application_1
+# OneVote
 
 A new Flutter project.
 

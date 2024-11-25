@@ -8,6 +8,8 @@ import 'package:csv/csv.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 
+import '../auths/createPollAuthentication.dart';
+
 class PollCreatePage extends StatefulWidget {
   const PollCreatePage({super.key});
 
@@ -299,7 +301,15 @@ class _PollCreatePageState extends State<PollCreatePage> {
     // Initialize UUID generator
     var uuid = const Uuid();
     // Get the logged-in user's email
-    String createdBy = FirebaseAuth.instance.currentUser?.email ?? "Unknown"; 
+    String createdBy = await checkUserAndShowDialog(context);
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    String? userMail = currentUser?.email;
+    String? totPrice = (emailCount * (double.tryParse(pricePerVoter) ?? 0.0)).toStringAsFixed(2);
+    print(totPrice);
+
+    print(createdBy);
+
+
     // Create poll data
     final pollData = {
       'pollId': uuid.v4(),  // Generate a unique poll ID
@@ -333,6 +343,7 @@ class _PollCreatePageState extends State<PollCreatePage> {
       }).toList(),
       'createdBy': createdBy,
       'isPayment': 0,
+      'paymentAmount': totPrice,
     };
 
     // Save data to Firestore
@@ -341,6 +352,8 @@ class _PollCreatePageState extends State<PollCreatePage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Poll created successfully!"))
       );
+      // payment(context, createdBy as String, userMail!, totPrice);
+
       // Clear the form after submission
       pollTitleController.clear();
       votingDescriptionController.clear();
@@ -382,6 +395,7 @@ class _PollCreatePageState extends State<PollCreatePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Create Poll"),
+        backgroundColor: Colors.lightBlue,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -595,7 +609,7 @@ class _PollCreatePageState extends State<PollCreatePage> {
                   alignment: Alignment.center,
                   child: Text(
                     pricePerVoter.isNotEmpty
-                        ? "Per Email $pricePerVoter Dollars"
+                        ? "Per Email $pricePerVoter Taka"
                         : "Loading...", // Show "Loading..." while fetching data.
                     style: const TextStyle(
                       fontStyle: FontStyle.italic,
@@ -618,7 +632,7 @@ class _PollCreatePageState extends State<PollCreatePage> {
                       ),
                       const SizedBox(width: 8.0), // Add space between the icon and text
                       Text(
-                        "Total Cost: \$${(emailCount * (double.tryParse(pricePerVoter) ?? 0.0)).toStringAsFixed(2)}",
+                        "Total Cost: ৳${(emailCount * (double.tryParse(pricePerVoter) ?? 0.0)).toStringAsFixed(2)}",
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.red, // Set the text color to white

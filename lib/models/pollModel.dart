@@ -13,6 +13,7 @@ class Poll {
   DateTime createdAt;
   String createdBy;
   int isPayment;  // New field to track payment status, default to 0
+  String paymentAmount;
 
   Poll({
     required this.pollId,
@@ -27,6 +28,7 @@ class Poll {
     required this.createdAt,
     required this.createdBy,
     this.isPayment = 0,  // Default isPayment to 0
+    this.paymentAmount ="0.00",
   });
 
   // Convert Poll object to Map for Firestore
@@ -44,6 +46,7 @@ class Poll {
       'createdAt': createdAt.toIso8601String(),
       'createdBy': createdBy,
       'isPayment': isPayment,  // Include the isPayment field
+      'paymentAmount': paymentAmount,
     };
   }
 
@@ -62,6 +65,7 @@ class Poll {
       createdAt: DateTime.parse(map['createdAt']),
       createdBy: map['createdBy'],
       isPayment: map['isPayment'] ?? 0,  // Default to 0 if isPayment is not provided
+      paymentAmount: map['paymentAmount'],
     );
   }
 }

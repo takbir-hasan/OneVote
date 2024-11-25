@@ -46,6 +46,10 @@ dependencies:
   csv: ^6.0.0
   file_picker: ^8.1.4
   uuid: ^4.5.1
+  bkash: ^0.0.2
+#  get:
+  uddoktapay: ^0.0.4
+#  flutter_sslcommerz: ^2.3.6
 
 dev_dependencies:
   flutter_test:

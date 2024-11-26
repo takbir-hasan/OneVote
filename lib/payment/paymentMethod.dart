@@ -12,6 +12,7 @@ import 'package:uddoktapay/models/customer_model.dart';
 import 'package:uddoktapay/models/request_response.dart';
 import 'package:uddoktapay/uddoktapay.dart';
 
+import '../controllers/sendTokenController.dart';
 import '../widgets/main.dart';
 
 
@@ -56,7 +57,7 @@ bkashPayment(BuildContext context, String name, String email, String price, Stri
 
     print('Payment successful, TRX ID: ${response.trxId}');
     print('Payment ID: ${response.paymentId}');
-    _showSuccessSnackBar(context, 'Payment Successful');
+    _showSuccessSnackBar(context, 'Payment Successful', id,voterlist);
   } on BkashFailure catch (e) {
     print('bKash Payment Failed: ${e.message}');
     _showErrorSnackBar(context, 'Payment Failed: ${e.message}');
@@ -78,7 +79,7 @@ Future<void> uddoktapay(BuildContext context, String name, String email, String 
     if (response.status == ResponseStatus.completed) {
       print('Payment completed, TRX ID: ${response.transactionId}');
       print('Sender Number: ${response.senderNumber}');
-      _showSuccessSnackBar(context, 'Payment Completed');
+      _showSuccessSnackBar(context, 'Payment Completed',id,voterlist);
     } else if (response.status == ResponseStatus.canceled) {
       print('Payment canceled');
       _showErrorSnackBar(context, 'Payment Canceled');
@@ -128,13 +129,14 @@ Future<void> uddoktapay(BuildContext context, String name, String email, String 
 // }
 
 /// Show Success SnackBar
-void _showSuccessSnackBar(BuildContext context, String message) {
+void _showSuccessSnackBar(BuildContext context, String message, String id, List<Map<String, Object>> voterlist) {
   // ScaffoldMessenger.of(context).showSnackBar(
   //   SnackBar(
   //     content: Text(message),
   //     backgroundColor: Colors.green,
   //   ),
   // );
+  handlePaymentSuccess(id, voterlist);
   Navigator.push(
       context,
       MaterialPageRoute(

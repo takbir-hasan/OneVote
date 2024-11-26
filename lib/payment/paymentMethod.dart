@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:OneVote/models/pollModel.dart';
 import 'package:bkash/bkash.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,17 +12,20 @@ import 'package:uddoktapay/models/customer_model.dart';
 import 'package:uddoktapay/models/request_response.dart';
 import 'package:uddoktapay/uddoktapay.dart';
 
-double totalPrice = 1.00;  // Example amount
+import '../widgets/main.dart';
 
-void onButtonTap(BuildContext context, String selected) async {
+
+// double totalPrice = 1.00;  // Example amount
+
+void onButtonTap(BuildContext context, String selected, String name, String email, String price, String id, List<Map<String, Object>> voterlist) async {
   try {
     switch (selected) {
       case 'bkash':
-        await bkashPayment(context);
+        await bkashPayment(context, name, email, price, id, voterlist);
         break;
 
       case 'uddoktapay':
-        await uddoktapay(context);
+        await uddoktapay(context, name, email, price, id, voterlist);
         break;
 
       // case 'sslcommerz':
@@ -40,13 +44,13 @@ void onButtonTap(BuildContext context, String selected) async {
 }
 
 /// bKash Payment
-bkashPayment(BuildContext context) async {
+bkashPayment(BuildContext context, String name, String email, String price, String id, List<Map<String, Object>> voterlist) async {
   final bkash = Bkash(logResponse: true);
 
   try {
     final response = await bkash.pay(
       context: context,
-      amount: totalPrice,
+      amount: double.parse(price),
       merchantInvoiceNumber: 'Test0123456',
     );
 
@@ -60,15 +64,15 @@ bkashPayment(BuildContext context) async {
 }
 
 /// UddoktaPay Payment
-Future<void> uddoktapay(BuildContext context) async {
+Future<void> uddoktapay(BuildContext context, String name, String email, String price, String id, List<Map<String, Object>> voterlist) async {
   try {
     final response = await UddoktaPay.createPayment(
       context: context,
       customer: CustomerDetails(
-        fullName: 'Md Shirajul Islam',
-        email: 'ytshirajul@icould.com',
+        fullName: name,
+        email: email,
       ),
-      amount: totalPrice.toString(),
+      amount: price,
     );
 
     if (response.status == ResponseStatus.completed) {
@@ -125,11 +129,33 @@ Future<void> uddoktapay(BuildContext context) async {
 
 /// Show Success SnackBar
 void _showSuccessSnackBar(BuildContext context, String message) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(message),
-      backgroundColor: Colors.green,
-    ),
+  // ScaffoldMessenger.of(context).showSnackBar(
+  //   SnackBar(
+  //     content: Text(message),
+  //     backgroundColor: Colors.green,
+  //   ),
+  // );
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+      builder: (context) => HomeActivity())
+  );
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Payment Success'),
+        content: Text('Your poll has created successfully!'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);  // Close the dialog
+            },
+            child: Text('Ok'),
+          ),
+        ],
+      );
+    },
   );
 }
 

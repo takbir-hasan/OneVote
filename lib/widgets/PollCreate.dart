@@ -309,10 +309,18 @@ class _PollCreatePageState extends State<PollCreatePage> {
 
     print(createdBy);
 
+    String id = uuid.v4();
+    List<Map<String, Object>> voterlist = voterListController.text.split(',').map((email) {
+      return {
+        'email': email.trim(),
+        'uniqueId': uuid.v4(),  // Generate a unique ID for each voter
+        'hasVoted': false,  // Default to false
+      };
+    }).toList();
 
     // Create poll data
     final pollData = {
-      'pollId': uuid.v4(),  // Generate a unique poll ID
+      'pollId': id,  // Generate a unique poll ID
       'pollTitle': pollTitleController.text,
       'votingDescription': votingDescriptionController.text,
       'startTime': startTime,
@@ -333,14 +341,7 @@ class _PollCreatePageState extends State<PollCreatePage> {
       }).toList(),
       // 'voterList': voterListController.text.split(',').map((email) => email.trim()).toList(),
        // Add voterList with unique IDs for each voter
-      'voterList': voterListController.text.split(',').map((email) {
-        return {
-          'email': email.trim(),
-          'uniqueId': uuid.v4(),  // Generate a unique ID for each voter
-          'hasVoted': false,  // Default to false
-
-        };
-      }).toList(),
+      'voterList': voterlist,
       'createdBy': createdBy,
       'isPayment': 0,
       'paymentAmount': totPrice,
@@ -349,10 +350,10 @@ class _PollCreatePageState extends State<PollCreatePage> {
     // Save data to Firestore
     try {
       await _firestore.collection('polls').add(pollData);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Poll created successfully!"))
-      );
-      // payment(context, createdBy as String, userMail!, totPrice);
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   const SnackBar(content: Text("Poll created successfully!"))
+      // );
+       payment(context, createdBy, userMail!, totPrice, id, voterlist);
 
       // Clear the form after submission
       pollTitleController.clear();

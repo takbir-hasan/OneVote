@@ -1,3 +1,4 @@
+import 'package:OneVote/models/pollModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -55,7 +56,7 @@ Future<String> checkUserAndShowDialog(BuildContext context) async {
 }
 
 // Function to show the payment dialog, for example when the user needs to be signed in
-void payment(BuildContext context, String name, String email, String price) {
+void payment(BuildContext context, String name, String email, String price, String id, List<Map<String, Object>> voterlist) {
   showDialog(
     context: context,
     builder: (context) {
@@ -68,7 +69,7 @@ void payment(BuildContext context, String name, String email, String price) {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const Checkout()),
+                    builder: (context) => Checkout(name: name,email: email,price:price, id:id, voterlist:voterlist)),
               );
             },
             child: Text('Pay'),

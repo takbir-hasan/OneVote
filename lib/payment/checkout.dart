@@ -1,9 +1,23 @@
+import 'package:OneVote/models/pollModel.dart';
 import 'package:OneVote/payment/paymentMethod.dart';
 import 'package:flutter/material.dart';
 
 class Checkout extends StatefulWidget {
-  const Checkout({super.key});
+  final String name;
+  final String email;
+  final String price;
+  final String id;
+  final List<Map<String, Object>> voterlist;
 
+  // Constructor to accept the parameters
+  const Checkout({
+    super.key,
+    required this.name,
+    required this.email,
+    required this.price,
+    required this.id,
+    required  this.voterlist,
+  });
   @override
   State<Checkout> createState() => _CheckoutState();
 }
@@ -90,7 +104,7 @@ class _CheckoutState extends State<Checkout> {
               ),
             ),
             InkWell(
-              onTap: selected == null ? null : () => onButtonTap(context, selected ?? ''),
+              onTap: selected == null ? null : () => onButtonTap(context, selected ?? '', widget.name, widget.email, widget.price, widget.id, widget.voterlist),
               child: Container(
                 height: 50,
                 width: double.infinity,

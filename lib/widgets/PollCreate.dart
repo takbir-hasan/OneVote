@@ -3,10 +3,13 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:file_picker/file_picker.dart'; 
-import 'package:csv/csv.dart'; 
+import 'package:file_picker/file_picker.dart';
+import 'package:csv/csv.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
+
+import '../auths/createPollAuthentication.dart';
+
 
 class PollCreatePage extends StatefulWidget {
   const PollCreatePage({super.key});
@@ -29,7 +32,7 @@ class _PollCreatePageState extends State<PollCreatePage> {
    // Add controllers for Start Time and End Time
   final TextEditingController startTimeController = TextEditingController();
   final TextEditingController endTimeController = TextEditingController();
-  
+
   DateTime? startTime;
   DateTime? endTime;
 
@@ -85,7 +88,7 @@ class _PollCreatePageState extends State<PollCreatePage> {
         "positionTitle": "", // Store position title here
         "candidates": [
           {"name": "", "image": null,
-          "voteCount": 0 
+          "voteCount": 0
           }
         ]
       });
@@ -180,7 +183,7 @@ class _PollCreatePageState extends State<PollCreatePage> {
   }
 
 
- 
+
 
   // List to hold the voter emails
     List<String> voterEmails = [];
@@ -217,7 +220,7 @@ class _PollCreatePageState extends State<PollCreatePage> {
   }
 
 
-  
+
   // Function to show Date and Time Picker
   Future<void> pickDateTime(TextEditingController controller, DateTime? selectedTime) async {
     final DateTime? picked = await showDatePicker(
@@ -240,7 +243,7 @@ class _PollCreatePageState extends State<PollCreatePage> {
           pickedTime.minute,
         );
         controller.text = "${selectedDateTime.toLocal()}".split(' ')[0];
-       
+
         setState(() {
           if (controller == startTimeController) {
             startTime = selectedDateTime;
@@ -299,10 +302,27 @@ class _PollCreatePageState extends State<PollCreatePage> {
     // Initialize UUID generator
     var uuid = const Uuid();
     // Get the logged-in user's email
-    String createdBy = FirebaseAuth.instance.currentUser?.email ?? "Unknown"; 
+    String createdBy = await checkUserAndShowDialog(context);
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    String? userMail = currentUser?.email;
+    String? totPrice = (emailCount * (double.tryParse(pricePerVoter) ?? 0.0)).toStringAsFixed(2);
+    print(totPrice);
+
+    print(createdBy);
+
+
+
+  final  List<Map<String, Object>> voterlist = voterListController.text.split(',').map((email) {
+      return {
+        'email': email.trim(),
+        'uniqueId': uuid.v4(),  // Generate a unique ID for each voter
+        'hasVoted': false,  // Default to false
+      };
+    }).toList();
+
     // Create poll data
     final pollData = {
-      'pollId': uuid.v4(),  // Generate a unique poll ID
+      'pollId': uuid.v4(), // Generate a unique poll ID,
       'pollTitle': pollTitleController.text,
       'votingDescription': votingDescriptionController.text,
       'startTime': startTime,
@@ -323,24 +343,21 @@ class _PollCreatePageState extends State<PollCreatePage> {
       }).toList(),
       // 'voterList': voterListController.text.split(',').map((email) => email.trim()).toList(),
        // Add voterList with unique IDs for each voter
-      'voterList': voterListController.text.split(',').map((email) {
-        return {
-          'email': email.trim(),
-          'uniqueId': uuid.v4(),  // Generate a unique ID for each voter
-          'hasVoted': false,  // Default to false
-
-        };
-      }).toList(),
+      'voterList': voterlist,
       'createdBy': createdBy,
       'isPayment': 0,
+      'paymentAmount': totPrice,
     };
 
     // Save data to Firestore
     try {
-      await _firestore.collection('polls').add(pollData);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Poll created successfully!"))
-      );
+      DocumentReference docRef = await _firestore.collection('polls').add(pollData);
+      String id = docRef.id;
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   const SnackBar(content: Text("Poll created successfully!"))
+      // );
+       payment(context, createdBy, userMail!, totPrice, id, voterlist);
+
       // Clear the form after submission
       pollTitleController.clear();
       votingDescriptionController.clear();
@@ -382,6 +399,7 @@ class _PollCreatePageState extends State<PollCreatePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Create Poll"),
+        backgroundColor: Colors.lightBlue,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -595,7 +613,7 @@ class _PollCreatePageState extends State<PollCreatePage> {
                   alignment: Alignment.center,
                   child: Text(
                     pricePerVoter.isNotEmpty
-                        ? "Per Email $pricePerVoter Dollars"
+                        ? "Per Email $pricePerVoter Taka"
                         : "Loading...", // Show "Loading..." while fetching data.
                     style: const TextStyle(
                       fontStyle: FontStyle.italic,
@@ -618,7 +636,7 @@ class _PollCreatePageState extends State<PollCreatePage> {
                       ),
                       const SizedBox(width: 8.0), // Add space between the icon and text
                       Text(
-                        "Total Cost: \$${(emailCount * (double.tryParse(pricePerVoter) ?? 0.0)).toStringAsFixed(2)}",
+                        "Total Cost: ৳${(emailCount * (double.tryParse(pricePerVoter) ?? 0.0)).toStringAsFixed(2)}",
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.red, // Set the text color to white

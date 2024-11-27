@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import '../auths/adminAuthentication.dart';
+import '../payment/checkout.dart';
 import 'AboutUs.dart';
 import 'VotingResultPage.dart';
 import 'Feedback.dart';
@@ -123,7 +124,8 @@ class HomeActivity extends StatelessWidget {
           // IconButton(onPressed: () {}, icon: const Icon(Icons.comment)),
           IconButton(
               onPressed: () {
-                mySnackBar("Searching...", context);
+                 mySnackBar("Searching...", context);
+
               },
               icon: const Icon(Icons.search)),
           IconButton(

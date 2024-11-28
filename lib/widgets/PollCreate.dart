@@ -286,13 +286,6 @@ class _PollCreatePageState extends State<PollCreatePage> {
       return;
     }
 
-    if (positions.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("At least one position is required")),
-      );
-      return;
-    }
-
     // Validate that there is at least one position
   if (positions.isEmpty) {
     ScaffoldMessenger.of(context).showSnackBar(

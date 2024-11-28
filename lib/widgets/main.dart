@@ -229,7 +229,7 @@ Future<List<Map<String, dynamic>>> fetchPollData() async {
               leading: const Icon(Icons.where_to_vote, color: Colors.lightBlue),
               title: const Text("Create Pole"),
               onTap: () {
-                mySnackBar("pole Page", context);
+                // mySnackBar("pole Page", context);
                 Navigator.push(
                   context,
                   MaterialPageRoute(

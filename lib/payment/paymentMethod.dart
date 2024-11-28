@@ -147,7 +147,7 @@ void _showSuccessSnackBar(BuildContext context, String message, String id, List<
     builder: (context) {
       return AlertDialog(
         title: Text('Payment Success'),
-        content: Text('Your poll has created successfully!'),
+        content: Text('Your poll is live now!'),
         actions: <Widget>[
           TextButton(
             onPressed: () {

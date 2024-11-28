@@ -293,6 +293,44 @@ class _PollCreatePageState extends State<PollCreatePage> {
       return;
     }
 
+    // Validate that there is at least one position
+  if (positions.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("At least one position is required")),
+    );
+    return;
+  }
+
+  // Validate each position and candidate
+  for (var position in positions) {
+    // Check if the position title is empty
+    if (position["positionTitle"] == null || position["positionTitle"].trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Position name is required")),
+      );
+      return;
+    }
+
+    // Validate each candidate in the position
+    for (var candidate in position["candidates"]) {
+      // Check if candidate name is empty
+      if (candidate["name"] == null || candidate["name"].trim().isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Candidate name is required")),
+        );
+        return;
+      }
+
+      // Check if the candidate image is missing (if image is required)
+      if (candidate["image"] == null || candidate["image"].isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Candidate image is required")),
+        );
+        return;
+      }
+    }
+  }
+
     if (voterListController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Voter list is required")),
@@ -347,6 +385,7 @@ class _PollCreatePageState extends State<PollCreatePage> {
       'createdBy': createdBy,
       'isPayment': 0,
       'paymentAmount': totPrice,
+      'createdAt': DateTime.now().toIso8601String(), // Add the current time here
     };
 
     // Save data to Firestore

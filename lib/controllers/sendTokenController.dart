@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart'; // Add this package
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server/gmail.dart';
+// import 'package:flutter_email_sender/flutter_email_sender.dart'; // Add this package
 
 
 Future<void> handlePaymentSuccess(String pollId, List<Map<String, Object>> voterList) async {
@@ -10,6 +12,7 @@ Future<void> handlePaymentSuccess(String pollId, List<Map<String, Object>> voter
       'isPayment': 1,
     });
     print("Payment status updated successfully for pollId: $pollId");
+    final user = FirebaseAuth.instance.currentUser?.email;
 
     // Step 2: Send emails to voters
     String title = await getPollData(pollId);
@@ -19,30 +22,33 @@ Future<void> handlePaymentSuccess(String pollId, List<Map<String, Object>> voter
     for (var voterMap in voterList) {
       await sendEmailToVoter(voterMap, title, name);
     }
+
     print("Emails sent to all voters.");
+    confirmationMail(user!,title);
+    print("Confirmation emails sent.");
   } catch (e) {
     print("Error in handlePaymentSuccess: $e");
   }
 }
 
-Future<void> sendEmailToVoter(Map<String, Object> voterMap, String title, String name) async {
-  String token = voterMap['uniqueId'] as String;
-  String voterEmail = voterMap['email'] as String;
-
-  final Email email = Email(
-    body: 'Dear Voter,\n$name has created a poll named $title and you are requested to vote.\n\nYour unique ID for the poll is: $token.\nPlease use this ID to cast your vote.\n\nThank you!',
-    subject: 'Your Poll Unique ID',
-    recipients: [voterEmail],
-    isHTML: false,
-  );
-
-  try {
-    await FlutterEmailSender.send(email);
-    print("Email sent to $voterEmail.");
-  } catch (e) {
-    print("Failed to send email to $voterEmail: $e");
-  }
-}
+// Future<void> sendEmailToVoter(Map<String, Object> voterMap, String title, String name) async {
+//   String token = voterMap['uniqueId'] as String;
+//   String voterEmail = voterMap['email'] as String;
+//
+//   final Email email = Email(
+//     body: 'Dear Voter,\n$name has created a poll named $title and you are requested to vote.\n\nYour unique ID for the poll is: $token.\nPlease use this ID to cast your vote.\n\nThank you!',
+//     subject: 'Your Poll Unique ID',
+//     recipients: [voterEmail],
+//     isHTML: false,
+//   );
+//
+//   try {
+//     await FlutterEmailSender.send(email);
+//     print("Email sent to $voterEmail.");
+//   } catch (e) {
+//     print("Failed to send email to $voterEmail: $e");
+//   }
+// }
 
 
 Future<String> getPollData(String pollId) async {
@@ -89,5 +95,63 @@ Future<Map<String, dynamic>?> _fetchUserData() async {
   } catch (e) {
     print("Error fetching user data: $e");
     return null;
+  }
+}
+
+Future<void> sendEmailToVoter(Map<String, Object> voterMap, String title, String name) async {
+  String token = voterMap['uniqueId'] as String;
+  String voterEmail = voterMap['email'] as String;
+
+  String username = 'onevote.official@gmail.com';
+  String password = 'jsfeyymjpizbnmzi';
+
+  final smtpServer = gmail(username, password);
+
+  final message = Message()
+    ..from = Address(username, 'OneVote')
+    ..recipients.add(voterEmail)
+    // ..ccRecipients.addAll(['destCc1@example.com', 'destCc2@example.com'])
+    // ..bccRecipients.add(Address('bccAddress@example.com'))
+    ..subject = 'Your Vote Unique ID'
+    ..text = 'Dear Voter,\n$name has created a poll named $title and you are requested to vote.\n\nYour unique ID for the poll is: $token.\nPlease use this ID to cast your vote.\n\nThank you!';
+    // ..html = "<h1>Test</h1>\n<p>Hey! Here's some HTML content</p>";
+
+  try {
+    final sendReport = await send(message, smtpServer);
+    print('Message sent: ' + sendReport.toString());
+  } on MailerException catch (e) {
+    print('Message not sent.');
+    for (var p in e.problems) {
+      print('Problem: ${p.code}: ${p.msg}');
+    }
+  }
+}
+
+
+
+Future<void> confirmationMail(String email, String title) async {
+
+  String username = 'onevote.official@gmail.com';
+  String password = 'jsfeyymjpizbnmzi';
+
+  final smtpServer = gmail(username, password);
+
+  final message = Message()
+    ..from = Address(username, 'OneVote')
+    ..recipients.add(email)
+    // ..ccRecipients.addAll(['destCc1@example.com', 'destCc2@example.com'])
+    // ..bccRecipients.add(Address('bccAddress@example.com'))
+    ..subject = 'Poll Creation Confirmation'
+    ..text = 'Dear user,\n Your poll named $title is live now!\n\nThank you for being with us.';
+    // ..html = "<h1>Test</h1>\n<p>Hey! Here's some HTML content</p>";
+
+  try {
+    final sendReport = await send(message, smtpServer);
+    print('Message sent: ' + sendReport.toString());
+  } on MailerException catch (e) {
+    print('Message not sent.');
+    for (var p in e.problems) {
+      print('Problem: ${p.code}: ${p.msg}');
+    }
   }
 }

@@ -289,7 +289,7 @@ Future<List<Map<String, dynamic>>> fetchPollData() async {
       ),
       floatingActionButton: FloatingActionButton(
           elevation: 10,
-          backgroundColor: Colors.lightBlue,
+          backgroundColor: Colors.lightBlue.withOpacity(0.4),
           onPressed: () {
             // mySnackBar("I am floating action button", context);
              Navigator.push(

@@ -9,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 
 import '../auths/createPollAuthentication.dart';
+import 'main.dart';
 
 
 class PollCreatePage extends StatefulWidget {
@@ -432,6 +433,15 @@ class _PollCreatePageState extends State<PollCreatePage> {
       appBar: AppBar(
         title: const Text("Create Poll"),
         backgroundColor: Colors.lightBlue,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomeActivity()),
+            );
+          },
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),

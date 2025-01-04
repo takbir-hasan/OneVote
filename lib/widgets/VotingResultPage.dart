@@ -3,16 +3,22 @@ import 'package:fl_chart/fl_chart.dart';
 
 class VotingResultPage extends StatelessWidget {
   final String electionName;
-  final String electionDate;
+  final String startingDate;
+  final String endingDate;
   final String electionDescription;
   final String electionStatus;
+  final String pollId;
+  final int isOwner;
 
   const VotingResultPage({
     Key? key,
     required this.electionName,
-    required this.electionDate,
+    required this.startingDate,
+    required this.endingDate,
     required this.electionDescription,
     required this.electionStatus,
+    required this.pollId,
+    required this.isOwner,
   }) : super(key: key);
 
   @override
@@ -28,7 +34,11 @@ class VotingResultPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Election Date: $electionDate",
+              "Election Date: $startingDate",
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 10),Text(
+              "Election Date: $endingDate",
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 10),

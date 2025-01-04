@@ -9,6 +9,7 @@ import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import '../auths/adminAuthentication.dart';
 import '../payment/checkout.dart';
 import 'AboutUs.dart';
+import 'ValidationPage.dart';
 import 'VotingResultPage.dart';
 import 'Feedback.dart';
 import '../auths/userAuthentication.dart';
@@ -53,6 +54,7 @@ Future<List<Map<String, dynamic>>> fetchPollData() async {
       "pollId": doc.id,
       "pollTitle": doc['pollTitle'] ?? "N/A",
       "votingDescription": doc['votingDescription'] ?? "N/A",
+      "createdBy": doc['createdBy'] ?? "N/A",
       "startTime": (doc['startTime'] as Timestamp).toDate(),
       "endTime": (doc['endTime'] as Timestamp).toDate(),
       "createdAt": doc['createdAt'] is Timestamp
@@ -375,10 +377,63 @@ Future<List<Map<String, dynamic>>> fetchPollData() async {
                       statusText = "Unknown";
                       break;
                   }
-
+                  
                   return GestureDetector(
-                    onTap: () {
+                    onTap: () async {
+
+                      User? user = FirebaseAuth.instance.currentUser;
+
+                      String startTime = poll['startTime'].toLocal().toString().split(' ')[0];
+                      String endTime = poll['endTime'].toLocal().toString().split(' ')[0];
+                      int visit = 0;
+
+                      if (user != null) {
+                        String uid = user.uid;
+
+                        // Fetch username from Firestore
+                        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(uid)
+                            .get();
+
+                        if (userDoc.exists) {
+                          String username = userDoc.get('name'); // Assuming 'username' field exists
+                          if(username == poll["createdBy"]){
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => VotingResultPage(electionName: poll["pollTitle"], startingDate: startTime, endingDate: endTime, electionDescription: poll["votingDescription"], electionStatus: statusText, pollId: poll['pollId'], isOwner: 1,)),
+                            );
+                            visit =1;
+                          }
+                        } else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ValidateVoterPage(electionName: poll["pollTitle"], startingDate: startTime, endingDate: endTime, electionDescription: poll["votingDescription"], electionStatus: statusText, pollId: poll['pollId'], isOwner: 0,)),
+                          );
+                          visit =1;
+                        }
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ValidateVoterPage(electionName: poll["pollTitle"], startingDate: startTime, endingDate: endTime, electionDescription: poll["votingDescription"], electionStatus: statusText, pollId: poll['pollId'], isOwner: 0,)),
+                        );
+                        visit =1;
+                      }
+
+
+                        if(visit == 0){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ValidateVoterPage(electionName: poll["pollTitle"], startingDate: startTime, endingDate: endTime, electionDescription: poll["votingDescription"], electionStatus: statusText, pollId: poll['pollId'], isOwner: 0,)),
+                          );
+                        }
+
+
                       // Handle poll tap (e.g., navigate to results page)
+
+
+
                     },
                     child: Card(
                       margin: const EdgeInsets.all(10),

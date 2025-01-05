@@ -60,15 +60,42 @@ class _ValidateVoterPageState extends State<ValidateVoterPage> {
         return;
       }
 
-      Poll poll = Poll.fromMap(data);
+      // Poll poll = Poll.fromMap(data);
 
-      Voter? voter;
-      for (var v in poll.voterList) {
-        if (v.voterId == email) {
-          voter = v;
-          break;
-        }
-      }
+      // Voter? voter;
+      // for (var v in poll.voterList) {
+      //   if (v.voterId == email) {
+      //     voter = v;
+      //     break;
+      //   }
+      // }
+
+      // if (voter == null) {
+      //   setState(() {
+      //     _statusMessage = "Email not found in the voter list.";
+      //   });
+      //   return;
+      // }
+
+      // if (token == voter.voterId) {
+      //   setState(() {
+      //     _statusMessage = "Validation successful!";
+      //   });
+      // } else {
+      //   setState(() {
+      //     _statusMessage = "Invalid token.";
+      //   });
+      // }
+
+      // Directly query email and uniqueId from voterList
+      final List<dynamic> voterList = data['voterList'] ?? [];
+      // print("Voter List: $voterList"); // Debugging voterList
+
+      // Find voter by email
+      final voter = voterList.firstWhere(
+        (voter) => voter['email'] == email,
+        orElse: () => null,
+      );
 
       if (voter == null) {
         setState(() {
@@ -77,7 +104,10 @@ class _ValidateVoterPageState extends State<ValidateVoterPage> {
         return;
       }
 
-      if (token == voter.voterId) {
+      // print("Found Voter: $voter"); // Debugging found voter
+
+      // Token validation
+      if (voter['uniqueId'] == token) {
         setState(() {
           _statusMessage = "Validation successful!";
         });

@@ -400,10 +400,33 @@ Future<List<Map<String, dynamic>>> fetchPollData() async {
                           String username = userDoc.get('name'); // Assuming 'username' field exists
                           if(username == poll["createdBy"]){
 
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => VotingResultPage(electionName: poll["pollTitle"], startingDate: startTime, endingDate: endTime, electionDescription: poll["votingDescription"], electionStatus: statusText, pollId: poll['pollId'], isOwner: 1,)),
-                            );
+                            if (poll['endTime'].isBefore(DateTime.now())) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => VotingResultPage(electionName: poll["pollTitle"], startingDate: startTime, endingDate: endTime, electionDescription: poll["votingDescription"], electionStatus: statusText, pollId: poll['pollId'], isOwner: 1,)),
+                              );
+
+                            }
+                            else{
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: const Text('Alert'),
+                                    content: const Text('Your poll result might be available after the poll is ended.'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context); // Close the dialog
+                                        },
+                                        child: const Text('Ok'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+
+                            }
                             visit =1;
                           }
                         } else {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/pollModel.dart';
+import 'CastVote.dart';
 
 class ValidateVoterPage extends StatefulWidget {
   final String electionName;
@@ -109,7 +110,11 @@ class _ValidateVoterPageState extends State<ValidateVoterPage> {
       // Token validation
       if (voter['uniqueId'] == token) {
         setState(() {
-          _statusMessage = "Validation successful!";
+          // _statusMessage = "Validation successful!";
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CastVotePage(pollId: pollId,)),
+          );
         });
       } else {
         setState(() {
@@ -154,7 +159,7 @@ class _ValidateVoterPageState extends State<ValidateVoterPage> {
             TextField(
               controller: _tokenController,
               decoration: const InputDecoration(
-                labelText: "Token",
+                labelText: "Unique ID",
                 border: OutlineInputBorder(),
               ),
             ),

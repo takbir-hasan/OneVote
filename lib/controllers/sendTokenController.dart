@@ -23,9 +23,9 @@ Future<void> handlePaymentSuccess(String pollId, List<Map<String, Object>> voter
       await sendEmailToVoter(voterMap, title, name);
     }
 
-    print("Emails sent to all voters.");
+    // print("Emails sent to all voters.");
     confirmationMail(user!,title);
-    print("Confirmation emails sent.");
+    // print("Confirmation emails sent.");
   } catch (e) {
     print("Error in handlePaymentSuccess: $e");
   }
@@ -113,7 +113,7 @@ Future<void> sendEmailToVoter(Map<String, Object> voterMap, String title, String
     // ..ccRecipients.addAll(['destCc1@example.com', 'destCc2@example.com'])
     // ..bccRecipients.add(Address('bccAddress@example.com'))
     ..subject = 'Your Vote Unique ID'
-    ..text = 'Dear Voter,\n$name has created a poll named $title and you are requested to vote.\n\nYour unique ID for the poll is: $token.\nPlease use this ID to cast your vote.\n\nThank you!';
+    ..text = 'Dear Voter,\n$name has created a poll named $title and you are requested to vote.\n\nYour unique ID for the poll is: $token\nPlease use this ID to cast your vote.\n\nThank you!';
     // ..html = "<h1>Test</h1>\n<p>Hey! Here's some HTML content</p>";
 
   try {

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:OneVote/widgets/SplashScreen.dart';
 import 'package:OneVote/widgets/price.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -298,11 +299,16 @@ class AdminProfile extends StatelessWidget {
                           try {
                             await FirebaseAuth.instance.signOut();
                             // Redirect to login page after sign-out
-                            Navigator.pushReplacement(
-                              // ignore: use_build_context_synchronously
+                            // Navigator.pushReplacement(
+                            //   // ignore: use_build_context_synchronously
+                            //   context,
+                            //   MaterialPageRoute(
+                            //       builder: (context) => const Admin()),
+                            // );
+                             Navigator.pushAndRemoveUntil(
                               context,
-                              MaterialPageRoute(
-                                  builder: (context) => const Admin()),
+                              MaterialPageRoute(builder: (context) => const SplashScreen()),
+                              (Route<dynamic> route) => false,
                             );
                           } catch (e) {
                             // print("Error signing out: $e");

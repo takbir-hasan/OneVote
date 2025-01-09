@@ -41,11 +41,18 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomeActivity extends StatelessWidget {
+class HomeActivity extends StatefulWidget {
   const HomeActivity({super.key});
 
+  @override
+  _HomeActivityState createState() => _HomeActivityState();
+}
+
+class _HomeActivityState extends State<HomeActivity> {
+   final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = "";
   // Function to fetch election data from Firestore
-Future<List<Map<String, dynamic>>> fetchPollData() async {
+  Future<List<Map<String, dynamic>>> fetchPollData() async {
   final snapshot = await FirebaseFirestore.instance.collection('polls').get();
 
   // Fetch and map the documents
@@ -71,6 +78,12 @@ Future<List<Map<String, dynamic>>> fetchPollData() async {
     paidPolls.sort((a, b) => b['createdAt'].compareTo(a['createdAt']));
   }  // Filter and sort only the polls where isPayment == 1
   
+  // Filter polls based on the search query
+  if (_searchQuery.isNotEmpty) {
+    paidPolls = paidPolls.where((poll) {
+      return poll['pollTitle'].toLowerCase().contains(_searchQuery.toLowerCase());
+    }).toList();
+  }
   return paidPolls;
 }
 
@@ -333,7 +346,27 @@ Future<List<Map<String, dynamic>>> fetchPollData() async {
           }
         },
       ),
-         body: FutureBuilder<List<Map<String, dynamic>>>(
+      body:
+         Column(
+          children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: _searchController,
+              decoration: const InputDecoration(
+                hintText: "Search Polls...",
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  _searchQuery = value;
+                });
+              },
+            ),
+          ),
+      Expanded(
+        child: FutureBuilder<List<Map<String, dynamic>>>(
         future: fetchPollData(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -603,21 +636,24 @@ Future<List<Map<String, dynamic>>> fetchPollData() async {
                                     return Text(
                                       "${time.days ?? 0}d ${time.hours ?? 0}h ${time.min ?? 0}m ${time.sec ?? 0}s",
                                       style: const TextStyle(fontSize: 14),
-                                    );
-                                  },
+                                     );
+                                    },
+                                    ),
+                                  ],
                                 ),
                               ],
+                              ),
                             ),
-                          ],
-                        ),
-                      ),
+                          ),
+                        );
+                      }).toList(),
                     ),
-                  );
-                }).toList(),
-              ),
+                  ),
+                );
+              },
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }

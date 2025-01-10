@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:OneVote/widgets/SplashScreen.dart';
+import 'package:OneVote/widgets/main.dart';
 import 'package:OneVote/widgets/price.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -307,7 +308,7 @@ class AdminProfile extends StatelessWidget {
                             // );
                              Navigator.pushAndRemoveUntil(
                               context,
-                              MaterialPageRoute(builder: (context) => const SplashScreen()),
+                              MaterialPageRoute(builder: (context) => const HomeActivity()),
                               (Route<dynamic> route) => false,
                             );
                           } catch (e) {

@@ -1,4 +1,3 @@
-import 'package:OneVote/widgets/SplashScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../widgets/Login.dart'; // Your Login Page
@@ -189,7 +188,7 @@ class ProfilePage extends StatelessWidget {
                               // After sign out, navigate to login page
                               Navigator.pushAndRemoveUntil(
                                 context,
-                                MaterialPageRoute(builder: (context) => const SplashScreen()),
+                                MaterialPageRoute(builder: (context) => const HomeActivity()),
                                 (Route<dynamic> route) => false,
                               );
                             } catch (e) {

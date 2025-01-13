@@ -49,8 +49,14 @@ class HomeActivity extends StatefulWidget {
 }
 
 class _HomeActivityState extends State<HomeActivity> {
-   final TextEditingController _searchController = TextEditingController();
+
+  final TextEditingController _searchController = TextEditingController();
   String _searchQuery = "";
+
+  //Refresh Loader
+  Future<void> _refreshData() async {
+    setState(() {});
+  }
   // Function to fetch election data from Firestore
   Future<List<Map<String, dynamic>>> fetchPollData() async {
   final snapshot = await FirebaseFirestore.instance.collection('polls').get();
@@ -366,9 +372,11 @@ class _HomeActivityState extends State<HomeActivity> {
             ),
           ),
       Expanded(
-        child: FutureBuilder<List<Map<String, dynamic>>>(
-        future: fetchPollData(),
-        builder: (context, snapshot) {
+        child: RefreshIndicator(
+          onRefresh: _refreshData,
+          child: FutureBuilder<List<Map<String, dynamic>>>(
+          future: fetchPollData(),
+          builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -653,6 +661,7 @@ class _HomeActivityState extends State<HomeActivity> {
               },
             ),
           ),
+       ),
         ],
       ),
     );

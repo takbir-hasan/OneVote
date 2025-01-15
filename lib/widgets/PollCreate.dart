@@ -26,6 +26,7 @@ class _PollCreatePageState extends State<PollCreatePage> {
   String? errorMessage;
 
   final ImagePicker _picker = ImagePicker();
+  final Uuid uuid = Uuid();
 
   List<Map<String, dynamic>> positions = [];
   int emailCount = 0;
@@ -89,6 +90,7 @@ class _PollCreatePageState extends State<PollCreatePage> {
         "positionTitle": "", // Store position title here
         "candidates": [
           {"name": "", "image": null,
+          "candidateId": uuid.v4(),  // Generate a unique ID for each candidate
           "voteCount": 0
           }
         ]
@@ -104,7 +106,7 @@ class _PollCreatePageState extends State<PollCreatePage> {
 
   void addCandidate(int positionIndex) {
     setState(() {
-      positions[positionIndex]["candidates"].add({"name": "", "image": null});
+      positions[positionIndex]["candidates"].add({"name": "","candidateId": uuid.v4(), "image": null});
     });
   }
 
@@ -367,6 +369,7 @@ class _PollCreatePageState extends State<PollCreatePage> {
               'name': candidate['name'],
               // ignore: prefer_if_null_operators
               'image': candidate['image'] != null ? candidate['image'] : null,
+              'candidateId': candidate['candidateId'],  // Add the candidate ID
                'voteCount': 0 // Added voteCount with an initial value of 0
 
             };

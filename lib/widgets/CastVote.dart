@@ -169,7 +169,7 @@ class _CastVotePageState extends State<CastVotePage> {
                 // Now, proceed to increment the vote count in the candidates subcollection
                 // var positionDocId = matchingPosition['positionTitle']; // Use a unique ID if available
                 // print("position pointing ....... :: $positionDocId");
-                await _firestore.runTransaction((transaction) async {
+                  await _firestore.runTransaction((transaction) async {
                   DocumentReference candidateRef = _firestore
                       .collection('polls')
                       .doc(widget.pollId)
@@ -183,9 +183,11 @@ class _CastVotePageState extends State<CastVotePage> {
                   print("kheal hbe2: $snapshot");
                   print("Snapshot exists: ${snapshot.exists}");
                   print("Document data: ${snapshot.data()}");
-                  if (snapshot.exists) {
-                    int currentCount = snapshot.get('voteCount') ?? 0;
-                    transaction.update(candidateRef, {'voteCount': currentCount + 1});
+                  if (snapshot.exists && snapshot.data() != null) {
+                     // Print the current voteCount before incrementing
+                      var currentVoteCount = (snapshot.data() as Map<String, dynamic>)['voteCount'] ?? 0;
+                      print("Current voteCount: $currentVoteCount");
+                    transaction.update(candidateRef, {'voteCount': FieldValue.increment(1)});
                     print("Vote count incremented successfully.");
                   } else {
                     print("Candidate not found.");

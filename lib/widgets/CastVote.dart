@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -22,30 +21,23 @@ class _CastVotePageState extends State<CastVotePage> {
     try {
       DocumentSnapshot pollDoc =
       await _firestore.collection('polls').doc(widget.pollId).get();
+
       if (pollDoc.exists) {
         final data = pollDoc.data() as Map<String, dynamic>;
-
-        // Convert Firestore Timestamp to DateTime
-        DateTime startTime = (data['startTime'] as Timestamp).toDate();
-        DateTime endTime = (data['endTime'] as Timestamp).toDate();
-        data['startTime'] = startTime;
-        data['endTime'] = endTime;
-
+        data['startTime'] = (data['startTime'] as Timestamp).toDate();
+        data['endTime'] = (data['endTime'] as Timestamp).toDate();
         return data;
-      } else {
-        return null;
       }
     } catch (e) {
       setState(() {
         _statusMessage = "Error fetching poll data: $e";
       });
-      return null;
     }
+    return null;
   }
 
   String _getPollStatus(DateTime startTime, DateTime endTime) {
     final now = DateTime.now();
-
     if (now.isBefore(startTime)) {
       return "Starts in: ${_timeDifference(now, startTime)}";
     } else if (now.isAfter(endTime)) {
@@ -78,9 +70,8 @@ class _CastVotePageState extends State<CastVotePage> {
     }
   }
 
-  void _submitVotes(DateTime startTime, DateTime endTime) async {
+  Future<void> _submitVotes(DateTime startTime, DateTime endTime) async {
     final now = DateTime.now();
-
     if (now.isBefore(startTime)) {
       setState(() {
         _statusMessage = "Voting hasn't started yet.";
@@ -98,19 +89,118 @@ class _CastVotePageState extends State<CastVotePage> {
     try {
       for (var position in _selectedCandidates.keys) {
         final candidateId = _selectedCandidates[position];
-        if (candidateId != null) {
-          final candidateDoc = _firestore
-              .collection('polls')
-              .doc(widget.pollId)
-              .collection('positions')
-              .doc(position)
-              .collection('candidates')
-              .doc(candidateId);
 
-          await candidateDoc.update({
-            'voteCount': FieldValue.increment(1),
-          });
-        }
+        print("Position: $position");
+        print("CandidateId: $candidateId");
+
+
+
+        // String normalizedPosition = position.trim();
+        // print("Normalized position: $normalizedPosition");
+        //
+        // var positionSnapshot = await _firestore
+        //     .collection('polls')
+        //     .doc(widget.pollId)
+        //     .collection('positions')
+        //     .where(normalizedPosition)
+        //     .get();
+        //
+        // if (positionSnapshot.docs.isEmpty) {
+        //   print("No documents found for positionTitle: $normalizedPosition");
+        //   print("Available documents in positions collection:");
+        //   var allPositions = await _firestore
+        //       .collection('polls')
+        //       .doc(widget.pollId)
+        //       .collection('positions')
+        //       .get();
+        //   for (var doc in allPositions.docs) {
+        //     print("Document ID: ${doc.id}, Data: ${doc.data()}");
+        //   }
+        // } else {
+        //   print("Found ${positionSnapshot.docs.length} document(s):");
+        //   for (var doc in positionSnapshot.docs) {
+        //     print("Document ID: ${doc.id}, Data: ${doc.data()}");
+        //   }
+        // }
+
+
+        if (candidateId != null) {
+          // Fetch the poll document
+          var pollSnapshot = await _firestore.collection('polls').doc(widget.pollId).get();
+
+          if (pollSnapshot.exists) {
+            var pollData = pollSnapshot.data();
+
+            // Check if positions array exists
+            if (pollData != null && pollData['positions'] != null) {
+              List<dynamic> positions = pollData['positions'];
+
+
+
+              int? matchingPositionIndex = positions.indexWhere(
+                    (pos) => pos['positionTitle'] == position,
+              );
+              var matchingPosition;
+              if (matchingPositionIndex != -1) {
+                 matchingPosition = positions[matchingPositionIndex];
+                // Now you can work with matchingPosition
+                print("position......: $matchingPosition");
+                print("index:,,,,,, $matchingPositionIndex");
+              } else {
+                print("Position not found.");
+              }
+
+
+              if (matchingPosition != null && matchingPositionIndex != -1) {
+
+
+                // var positionSnapshot = await _firestore
+                //     .collection('polls')
+                //     .doc(widget.pollId)
+                //     .collection('positions')
+                //     .where('positionTitle', isEqualTo: position)
+                //     .get();
+                String positionDocId = matchingPositionIndex.toString();
+
+                  //  positionDocId = matchingPosition.docs.first.id; // This gives you the Firestore-generated document ID
+                  // print("Position document ID: $positionDocId");
+
+
+                // Now, proceed to increment the vote count in the candidates subcollection
+                // var positionDocId = matchingPosition['positionTitle']; // Use a unique ID if available
+                // print("position pointing ....... :: $positionDocId");
+                await _firestore.runTransaction((transaction) async {
+                  DocumentReference candidateRef = _firestore
+                      .collection('polls')
+                      .doc(widget.pollId)
+                      .collection('positions')
+                      .doc(positionDocId) // If needed, map positionTitle to its ID
+                      .collection('candidates')
+                      .doc(candidateId);
+
+                  print("khela hbe: $candidateRef");
+                  DocumentSnapshot snapshot = await transaction.get(candidateRef);
+                  print("kheal hbe2: $snapshot");
+                  print("Snapshot exists: ${snapshot.exists}");
+                  print("Document data: ${snapshot.data()}");
+                  if (snapshot.exists) {
+                    int currentCount = snapshot.get('voteCount') ?? 0;
+                    transaction.update(candidateRef, {'voteCount': currentCount + 1});
+                    print("Vote count incremented successfully.");
+                  } else {
+                    print("Candidate not found.");
+                  }
+                });
+              } else {
+                print("Position not found.");
+              }
+            } else {
+              print("No positions found in the poll document.");
+            }
+          } else {
+            print("Poll not found.");
+          }
+      }
       }
 
       setState(() {
@@ -120,6 +210,7 @@ class _CastVotePageState extends State<CastVotePage> {
       setState(() {
         _statusMessage = "Error submitting votes: $e";
       });
+      print(e);
     }
   }
 
@@ -144,13 +235,11 @@ class _CastVotePageState extends State<CastVotePage> {
 
           final pollData = snapshot.data;
           if (pollData == null) {
-            return const Center(
-              child: Text("Poll not found."),
-            );
+            return const Center(child: Text("Poll not found."));
           }
 
-          final positions = List<Map<String, dynamic>>.from(pollData['positions']);
-          final pollTitle = pollData['pollTitle'];
+          final positions = List<Map<String, dynamic>>.from(pollData['positions'] ?? []);
+          final pollTitle = pollData['pollTitle'] ?? 'Poll';
           final startTime = pollData['startTime'] as DateTime;
           final endTime = pollData['endTime'] as DateTime;
           final status = _getPollStatus(startTime, endTime);
@@ -160,7 +249,6 @@ class _CastVotePageState extends State<CastVotePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Poll Details Header
                 Center(
                   child: Column(
                     children: [
@@ -175,7 +263,7 @@ class _CastVotePageState extends State<CastVotePage> {
                       Text("Start Time: ${DateFormat.yMMMd().add_jm().format(startTime)}"),
                       Text("End Time: ${DateFormat.yMMMd().add_jm().format(endTime)}"),
                       Text(
-                        "$status",
+                        status,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -186,40 +274,39 @@ class _CastVotePageState extends State<CastVotePage> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                // Positions and Candidates List
                 Expanded(
                   child: ListView.builder(
                     itemCount: positions.length,
                     itemBuilder: (context, index) {
                       final position = positions[index];
-                      final positionTitle = position['positionTitle'];
-                      final candidates = List<Map<String, dynamic>>.from(
-                          position['candidates']);
+                      final positionTitle = position['positionTitle'] ?? 'Position';
+                      final candidates = List<Map<String, dynamic>>.from(position['candidates'] ?? []);
 
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                           Center( child: Text(
-                             positionTitle,
-                             style: const TextStyle(
-                               fontSize: 18,
-                               fontWeight: FontWeight.bold,
-                             ),
-                           )),
-
-
-                            ...candidates.asMap().entries.map((entry) {
-                              int index = entry.key;
-                              Map<String, dynamic> candidate = entry.value;
-                              bool isSelected = _selectedCandidates[positionTitle] == index.toString();
+                            Center(
+                              child: Text(
+                                positionTitle,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            ...candidates.map((candidate) {
+                              final candidateID = candidate['candidateId'] ?? '';
+                              final candidateName = candidate['name'] ?? 'Unknown';
+                              final candidateImage = candidate['image'] ?? '';
+                              final isSelected = _selectedCandidates[positionTitle] == candidateID;
 
                               return GestureDetector(
                                 onTap: (status == "Running")
                                     ? () {
                                   setState(() {
-                                    _selectedCandidates[positionTitle] = index.toString();
+                                    _selectedCandidates[positionTitle] = candidateID;
                                   });
                                 }
                                     : null,
@@ -227,26 +314,26 @@ class _CastVotePageState extends State<CastVotePage> {
                                   margin: const EdgeInsets.symmetric(vertical: 8),
                                   decoration: BoxDecoration(
                                     color: isSelected ? Colors.blue.withOpacity(0.2) : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(16), // Rounded corners
+                                    borderRadius: BorderRadius.circular(16),
                                     border: Border.all(
-                                      color: isSelected ? Colors.blue : Colors.grey, // Optional border
+                                      color: isSelected ? Colors.blue : Colors.grey,
                                     ),
                                   ),
-                                  padding: const EdgeInsets.all(8), // Padding inside the container
+                                  padding: const EdgeInsets.all(8),
                                   child: Row(
                                     children: [
                                       CircleAvatar(
-                                        backgroundImage: MemoryImage(
-                                          Base64Decoder().convert(candidate['image']),
-                                        ),
-                                        onBackgroundImageError: (_, __) => const Icon(Icons.person),
+                                        backgroundImage: candidateImage.isNotEmpty
+                                            ? MemoryImage(Base64Decoder().convert(candidateImage))
+                                            : null,
+                                        child: candidateImage.isEmpty ? const Icon(Icons.person) : null,
                                       ),
                                       const SizedBox(width: 16),
                                       Expanded(
-                                        child: Text(candidate['name']),
+                                        child: Text(candidateName),
                                       ),
                                       Radio<String>(
-                                        value: index.toString(),
+                                        value: candidateID,
                                         groupValue: _selectedCandidates[positionTitle],
                                         onChanged: (status == "Running")
                                             ? (value) {
@@ -256,14 +343,12 @@ class _CastVotePageState extends State<CastVotePage> {
                                         }
                                             : null,
                                       ),
+
                                     ],
                                   ),
                                 ),
                               );
                             }).toList(),
-
-
-
                           ],
                         ),
                       );
@@ -272,9 +357,7 @@ class _CastVotePageState extends State<CastVotePage> {
                 ),
                 ElevatedButton(
                   onPressed: (status == "Running" && _selectedCandidates.isNotEmpty)
-                      ? () {
-                    _submitVotes(startTime, endTime);
-                  }
+                      ? () => _submitVotes(startTime, endTime)
                       : null,
                   child: const Text("Submit Votes"),
                 ),
@@ -285,9 +368,7 @@ class _CastVotePageState extends State<CastVotePage> {
                       _statusMessage,
                       style: TextStyle(
                         fontSize: 16,
-                        color: _statusMessage.contains("successfully")
-                            ? Colors.green
-                            : Colors.red,
+                        color: _statusMessage.contains("successfully") ? Colors.green : Colors.red,
                       ),
                     ),
                   ),

@@ -426,7 +426,7 @@ class _HomeActivityState extends State<HomeActivity> {
 
                       String startTime = poll['startTime'].toLocal().toString().split(' ')[0];
                       String endTime = poll['endTime'].toLocal().toString().split(' ')[0];
-                      int visit = 0;
+
 
                       if (user != null) {
                         String uid = user.uid;
@@ -438,7 +438,7 @@ class _HomeActivityState extends State<HomeActivity> {
                             .get();
 
                         if (userDoc.exists) {
-                          String username = userDoc.get('name'); // Assuming 'username' field exists
+                          String username = userDoc.get('name'); // Assuming 'name' field exists
                           if(username == poll["createdBy"]){
 
                             if (poll['endTime'].isBefore(DateTime.now())) {
@@ -466,32 +466,40 @@ class _HomeActivityState extends State<HomeActivity> {
                                   );
                                 },
                               );
+                            }
+
+                          }else{
+                            if (poll['endTime'].isBefore(DateTime.now())) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => VotingResultPage(electionName: poll["pollTitle"], startingDate: startTime, endingDate: endTime, electionDescription: poll["votingDescription"], electionStatus: statusText, pollId: poll['pollId'], isOwner: 0,)),
+                              );
 
                             }
-                            visit =1;
+                            else{
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ValidateVoterPage(electionName: poll["pollTitle"], startingDate: startTime, endingDate: endTime, electionDescription: poll["votingDescription"], electionStatus: statusText, pollId: poll['pollId'], isOwner: 0,)),
+                              );
+                            }
                           }
-                        } else {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => ValidateVoterPage(electionName: poll["pollTitle"], startingDate: startTime, endingDate: endTime, electionDescription: poll["votingDescription"], electionStatus: statusText, pollId: poll['pollId'], isOwner: 0,)),
-                          );
-                          visit =1;
                         }
                       } else {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => ValidateVoterPage(electionName: poll["pollTitle"], startingDate: startTime, endingDate: endTime, electionDescription: poll["votingDescription"], electionStatus: statusText, pollId: poll['pollId'], isOwner: 0,)),
-                        );
-                        visit =1;
-                      }
-
-
-                        if(visit == 0){
+                        if (poll['endTime'].isBefore(DateTime.now())) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => VotingResultPage(electionName: poll["pollTitle"], startingDate: startTime, endingDate: endTime, electionDescription: poll["votingDescription"], electionStatus: statusText, pollId: poll['pollId'], isOwner: 0,)),
+                          );
+                        }
+                        else{
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => ValidateVoterPage(electionName: poll["pollTitle"], startingDate: startTime, endingDate: endTime, electionDescription: poll["votingDescription"], electionStatus: statusText, pollId: poll['pollId'], isOwner: 0,)),
                           );
                         }
+
+
+                      }
 
 
                       // Handle poll tap (e.g., navigate to results page)

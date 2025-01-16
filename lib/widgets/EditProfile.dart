@@ -167,6 +167,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Profile'),
+        backgroundColor: Colors.lightBlue,
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator()) // Show loader

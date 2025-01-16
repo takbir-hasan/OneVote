@@ -68,7 +68,7 @@ class _ValidateVoterPageState extends State<ValidateVoterPage> {
 
       // Find voter by email
       final voter = voterList.firstWhere(
-        (voter) => voter['email'] == email,
+            (voter) => voter['email'] == email,
         orElse: () => null,
       );
 
@@ -93,9 +93,9 @@ class _ValidateVoterPageState extends State<ValidateVoterPage> {
           });
         }
         else{
-           setState(() {
-             _statusMessage = "Your vote has already completed";
-           });
+          setState(() {
+            _statusMessage = "Your vote has already completed";
+          });
         }
 
       } else {

@@ -100,6 +100,15 @@ class AdminProfile extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Admin Profile"),
         backgroundColor: Colors.lightBlue,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomeActivity()),
+            );
+          },
+        ),
       ),
       body: FutureBuilder<Map<String, dynamic>?>(
         future: _fetchUserData(),

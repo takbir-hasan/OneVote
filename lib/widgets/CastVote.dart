@@ -1,12 +1,20 @@
 import 'dart:convert';
+import 'package:OneVote/widgets/main.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class CastVotePage extends StatefulWidget {
   final String pollId;
+  final String mail;
+  final String token;
 
-  const CastVotePage({Key? key, required this.pollId}) : super(key: key);
+  const CastVotePage({
+    Key? key,
+    required this.pollId,
+    required this.mail,
+    required this.token,
+  }) : super(key: key);
 
   @override
   _CastVotePageState createState() => _CastVotePageState();
@@ -70,8 +78,11 @@ class _CastVotePageState extends State<CastVotePage> {
     }
   }
 
+
+
   Future<void> _submitVotes(DateTime startTime, DateTime endTime) async {
     final now = DateTime.now();
+
     if (now.isBefore(startTime)) {
       setState(() {
         _statusMessage = "Voting hasn't started yet.";
@@ -87,130 +98,151 @@ class _CastVotePageState extends State<CastVotePage> {
     }
 
     try {
-      for (var position in _selectedCandidates.keys) {
-        final candidateId = _selectedCandidates[position];
+      // Fetch poll document
+      final pollDoc = await _firestore.collection('polls').doc(widget.pollId).get();
 
-        print("Position: $position");
-        print("CandidateId: $candidateId");
-
-
-
-        // String normalizedPosition = position.trim();
-        // print("Normalized position: $normalizedPosition");
-        //
-        // var positionSnapshot = await _firestore
-        //     .collection('polls')
-        //     .doc(widget.pollId)
-        //     .collection('positions')
-        //     .where(normalizedPosition)
-        //     .get();
-        //
-        // if (positionSnapshot.docs.isEmpty) {
-        //   print("No documents found for positionTitle: $normalizedPosition");
-        //   print("Available documents in positions collection:");
-        //   var allPositions = await _firestore
-        //       .collection('polls')
-        //       .doc(widget.pollId)
-        //       .collection('positions')
-        //       .get();
-        //   for (var doc in allPositions.docs) {
-        //     print("Document ID: ${doc.id}, Data: ${doc.data()}");
-        //   }
-        // } else {
-        //   print("Found ${positionSnapshot.docs.length} document(s):");
-        //   for (var doc in positionSnapshot.docs) {
-        //     print("Document ID: ${doc.id}, Data: ${doc.data()}");
-        //   }
-        // }
-
-
-        if (candidateId != null) {
-          // Fetch the poll document
-          var pollSnapshot = await _firestore.collection('polls').doc(widget.pollId).get();
-
-          if (pollSnapshot.exists) {
-            var pollData = pollSnapshot.data();
-
-            // Check if positions array exists
-            if (pollData != null && pollData['positions'] != null) {
-              List<dynamic> positions = pollData['positions'];
-
-
-
-              int? matchingPositionIndex = positions.indexWhere(
-                    (pos) => pos['positionTitle'] == position,
-              );
-              var matchingPosition;
-              if (matchingPositionIndex != -1) {
-                 matchingPosition = positions[matchingPositionIndex];
-                // Now you can work with matchingPosition
-                print("position......: $matchingPosition");
-                print("index:,,,,,, $matchingPositionIndex");
-              } else {
-                print("Position not found.");
-              }
-
-
-              if (matchingPosition != null && matchingPositionIndex != -1) {
-
-
-                // var positionSnapshot = await _firestore
-                //     .collection('polls')
-                //     .doc(widget.pollId)
-                //     .collection('positions')
-                //     .where('positionTitle', isEqualTo: position)
-                //     .get();
-                String positionDocId = matchingPositionIndex.toString();
-
-                  //  positionDocId = matchingPosition.docs.first.id; // This gives you the Firestore-generated document ID
-                  // print("Position document ID: $positionDocId");
-
-
-                // Now, proceed to increment the vote count in the candidates subcollection
-                // var positionDocId = matchingPosition['positionTitle']; // Use a unique ID if available
-                // print("position pointing ....... :: $positionDocId");
-                await _firestore.runTransaction((transaction) async {
-                  DocumentReference candidateRef = _firestore
-                      .collection('polls')
-                      .doc(widget.pollId)
-                      .collection('positions')
-                      .doc(positionDocId) // If needed, map positionTitle to its ID
-                      .collection('candidates')
-                      .doc(candidateId);
-
-                  print("khela hbe: $candidateRef");
-                  DocumentSnapshot snapshot = await transaction.get(candidateRef);
-                  print("kheal hbe2: $snapshot");
-                  print("Snapshot exists: ${snapshot.exists}");
-                  print("Document data: ${snapshot.data()}");
-                  if (snapshot.exists) {
-                    int currentCount = snapshot.get('voteCount') ?? 0;
-                    transaction.update(candidateRef, {'voteCount': currentCount + 1});
-                    print("Vote count incremented successfully.");
-                  } else {
-                    print("Candidate not found.");
-                  }
-                });
-              } else {
-                print("Position not found.");
-              }
-            } else {
-              print("No positions found in the poll document.");
-            }
-          } else {
-            print("Poll not found.");
-          }
+      if (!pollDoc.exists) {
+        setState(() {
+          _statusMessage = "Poll not found.";
+        });
+        return;
       }
+
+      final pollData = pollDoc.data();
+      if (pollData == null || pollData['positions'] == null) {
+        setState(() {
+          _statusMessage = "Poll data is invalid.";
+        });
+        return;
       }
+
+      // Retrieve positions array
+      final List<dynamic> positions = pollData['positions'];
+
+      for (var positionTitle in _selectedCandidates.keys) {
+        final candidateId = _selectedCandidates[positionTitle];
+        if (candidateId == null) {
+          setState(() {
+            _statusMessage = "No candidate selected for $positionTitle.";
+          });
+          return;
+        }
+
+        // Find the matching position
+        final position = positions.firstWhere(
+              (pos) => pos['positionTitle'] == positionTitle,
+          orElse: () => null,
+        );
+
+        if (position == null) {
+          setState(() {
+            _statusMessage = "Position '$positionTitle' not found.";
+          });
+          return;
+        }
+
+        // Find the candidate in the position's candidates array
+        final List<dynamic> candidates = position['candidates'];
+        final candidate = candidates.firstWhere(
+              (cand) => cand['candidateId'] == candidateId,
+          orElse: () => null,
+        );
+
+        if (candidate == null) {
+          setState(() {
+            _statusMessage = "Candidate not found for position '$positionTitle'.";
+          });
+          return;
+        }
+
+        // Increment the vote count for the selected candidate
+        candidate['voteCount'] = (candidate['voteCount'] ?? 0) + 1;
+      }
+
+      // Update the poll document with the modified positions array
+      await _firestore.collection('polls').doc(widget.pollId).update({
+        'positions': positions,
+      });
+
+      // Update voter status
+      await _updateVoterStatus();
 
       setState(() {
         _statusMessage = "Votes submitted successfully!";
       });
+
+      await Future.delayed(Duration(seconds: 1));
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomeActivity()),
+      );
+
+
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Vote Complete'),
+            content: Text("Thank you for voting!\nResult will be published at ${DateFormat.yMMMd().add_jm().format(endTime)}"),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
     } catch (e) {
       setState(() {
         _statusMessage = "Error submitting votes: $e";
       });
-      print(e);
+    }
+  }
+
+  Future<void> _updateVoterStatus() async {
+    try {
+      final pollDoc = await _firestore.collection('polls').doc(widget.pollId).get();
+      if (!pollDoc.exists) {
+        setState(() {
+          _statusMessage = "Poll not found.";
+        });
+        return;
+      }
+
+      final data = pollDoc.data();
+      if (data == null) {
+        setState(() {
+          _statusMessage = "Poll document has no data.";
+        });
+        return;
+      }
+
+      final voterList = List.from(data['voterList'] ?? []);
+      final voterIndex = voterList.indexWhere((voter) => voter['email'] == widget.mail);
+
+      if (voterIndex == -1) {
+        setState(() {
+          _statusMessage = "Email not found in the voter list.";
+        });
+        return;
+      }
+
+      if (voterList[voterIndex]['uniqueId'] == widget.token) {
+        voterList[voterIndex]['hasVoted'] = true;
+        await _firestore.collection('polls').doc(widget.pollId).update({
+          'voterList': voterList,
+        });
+      } else {
+        setState(() {
+          _statusMessage = "Invalid token.";
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _statusMessage = "Error updating voter status: $e";
+      });
     }
   }
 
@@ -228,9 +260,7 @@ class _CastVotePageState extends State<CastVotePage> {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return Center(
-              child: Text("Error: ${snapshot.error}"),
-            );
+            return Center(child: Text("Error: ${snapshot.error}"));
           }
 
           final pollData = snapshot.data;
@@ -247,31 +277,17 @@ class _CastVotePageState extends State<CastVotePage> {
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Center(
-                  child: Column(
-                    children: [
-                      Text(
-                        pollTitle,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text("Start Time: ${DateFormat.yMMMd().add_jm().format(startTime)}"),
-                      Text("End Time: ${DateFormat.yMMMd().add_jm().format(endTime)}"),
-                      Text(
-                        status,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: _getStatusColor(status),
-                        ),
-                      ),
-                    ],
-                  ),
+                Text(
+                  pollTitle,
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                Text("Start Time: ${DateFormat.yMMMd().add_jm().format(startTime)}"),
+                Text("End Time: ${DateFormat.yMMMd().add_jm().format(endTime)}"),
+                Text(
+                  status,
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: _getStatusColor(status)),
                 ),
                 const SizedBox(height: 16),
                 Expanded(
@@ -282,94 +298,114 @@ class _CastVotePageState extends State<CastVotePage> {
                       final positionTitle = position['positionTitle'] ?? 'Position';
                       final candidates = List<Map<String, dynamic>>.from(position['candidates'] ?? []);
 
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Center(
-                              child: Text(
-                                positionTitle,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                      return Column(
+                        children: [
+                          const SizedBox(height: 16),
+                          Container(
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            decoration: BoxDecoration(
+                              color: Colors.lightBlue.shade50,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              positionTitle,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.lightBlue,
                               ),
                             ),
-                            ...candidates.map((candidate) {
-                              final candidateID = candidate['candidateId'] ?? '';
-                              final candidateName = candidate['name'] ?? 'Unknown';
-                              final candidateImage = candidate['image'] ?? '';
-                              final isSelected = _selectedCandidates[positionTitle] == candidateID;
+                          ),
+                          const SizedBox(height: 12),
 
-                              return GestureDetector(
-                                onTap: (status == "Running")
-                                    ? () {
-                                  setState(() {
+                          //showing candidates main khela
+
+                          ...candidates.map((candidate) {
+                            final candidateID = candidate['candidateId'] ?? '';
+                            final candidateName = candidate['name'] ?? 'Unknown';
+                            final candidateImage = candidate['image'] ?? '';
+                            final isSelected = _selectedCandidates[positionTitle] == candidateID;
+
+                            return GestureDetector(
+                              onTap: status == "Running"
+                                  ? () {
+                                setState(() {
+                                  if (isSelected) {
+                                    // Deselect if already selected
+                                    _selectedCandidates.remove(positionTitle);
+                                  } else {
+                                    // Select the candidate
                                     _selectedCandidates[positionTitle] = candidateID;
-                                  });
-                                }
-                                    : null,
-                                child: Container(
-                                  margin: const EdgeInsets.symmetric(vertical: 8),
-                                  decoration: BoxDecoration(
-                                    color: isSelected ? Colors.blue.withOpacity(0.2) : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(16),
-                                    border: Border.all(
-                                      color: isSelected ? Colors.blue : Colors.grey,
+                                  }
+                                });
+                              }
+                                  : null,
+                              child: Container(
+                                margin: const EdgeInsets.symmetric(vertical: 8),
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: isSelected ? Colors.blue : Colors.grey),
+                                  color: isSelected ? Colors.blue.shade50 : Colors.grey.shade100,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.shade300,
+                                      blurRadius: 4,
+                                      offset: const Offset(2, 2),
                                     ),
-                                  ),
-                                  padding: const EdgeInsets.all(8),
-                                  child: Row(
-                                    children: [
-                                      CircleAvatar(
-                                        backgroundImage: candidateImage.isNotEmpty
-                                            ? MemoryImage(Base64Decoder().convert(candidateImage))
-                                            : null,
-                                        child: candidateImage.isEmpty ? const Icon(Icons.person) : null,
-                                      ),
-                                      const SizedBox(width: 16),
-                                      Expanded(
-                                        child: Text(candidateName),
-                                      ),
-                                      Radio<String>(
-                                        value: candidateID,
-                                        groupValue: _selectedCandidates[positionTitle],
-                                        onChanged: (status == "Running")
-                                            ? (value) {
-                                          setState(() {
-                                            _selectedCandidates[positionTitle] = value!;
-                                          });
-                                        }
-                                            : null,
-                                      ),
-
-                                    ],
-                                  ),
+                                  ],
                                 ),
-                              );
-                            }).toList(),
-                          ],
-                        ),
+                                child: Row(
+                                  children: [
+                                    if (candidateImage.isNotEmpty)
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(24),
+                                        child: Image.memory(
+                                          base64Decode(candidateImage),
+                                          width: 48,
+                                          height: 48,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Text(
+                                        candidateName,
+                                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    if (isSelected)
+                                      const Icon(Icons.check_circle, color: Colors.blue),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }).toList(),
+
+                          // main khela sesh
+
+                        ],
                       );
                     },
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: (status == "Running" && _selectedCandidates.isNotEmpty)
+                  onPressed: _selectedCandidates.isNotEmpty
                       ? () => _submitVotes(startTime, endTime)
-                      : null,
-                  child: const Text("Submit Votes"),
+                      : null, // Button disabled if no votes are selected
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _selectedCandidates.isNotEmpty ? Colors.lightBlue : Colors.grey, // Color changes dynamically
+                  ),
+                  child: const Text("Submit Votes", style: TextStyle(color: Colors.black)),
                 ),
+
                 if (_statusMessage.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       _statusMessage,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: _statusMessage.contains("successfully") ? Colors.green : Colors.red,
-                      ),
+                      style: TextStyle(color: Colors.red.shade700, fontWeight: FontWeight.bold),
                     ),
                   ),
               ],
@@ -379,4 +415,5 @@ class _CastVotePageState extends State<CastVotePage> {
       ),
     );
   }
+
 }

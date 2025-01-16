@@ -77,184 +77,7 @@ class _CastVotePageState extends State<CastVotePage> {
     }
   }
 
-  // Future<void> _submitVotes(DateTime startTime, DateTime endTime) async {
-  //   final now = DateTime.now();
-  //   if (now.isBefore(startTime)) {
-  //     setState(() {
-  //       _statusMessage = "Voting hasn't started yet.";
-  //     });
-  //     return;
-  //   }
-  //
-  //   if (now.isAfter(endTime)) {
-  //     setState(() {
-  //       _statusMessage = "Voting has already ended.";
-  //     });
-  //     return;
-  //   }
-  //
-  //   // try {
-  //   //   for (var position in _selectedCandidates.keys) {
-  //   //     final candidateId = _selectedCandidates[position];
-  //   //     if (candidateId != null) {
-  //   //       final pollDoc = await _firestore.collection('polls').doc(widget.pollId).get();
-  //   //       if (!pollDoc.exists) {
-  //   //         setState(() {
-  //   //           _statusMessage = "Poll document not found.";
-  //   //         });
-  //   //         return;
-  //   //       }
-  //   //
-  //   //       final pollData = pollDoc.data();
-  //   //       if (pollData == null || pollData['positions'] == null) {
-  //   //         setState(() {
-  //   //           _statusMessage = "Invalid poll data.";
-  //   //         });
-  //   //         return;
-  //   //       }
-  //   //
-  //   //       final positions = List.from(pollData['positions']);
-  //   //       final positionIndex =
-  //   //       positions.indexWhere((pos) => pos['positionTitle'] == position);
-  //   //
-  //   //       if (positionIndex == -1) {
-  //   //         setState(() {
-  //   //           _statusMessage = "Position not found.";
-  //   //         });
-  //   //         return;
-  //   //       }
-  //   //
-  //   //       final positionDocId = positionIndex.toString();
-  //   //       final candidateRef = _firestore
-  //   //           .collection('polls')
-  //   //           .doc(widget.pollId)
-  //   //           .collection('positions')
-  //   //           .doc(positionDocId)
-  //   //           .collection('candidates')
-  //   //           .doc(candidateId);
-  //   //
-  //   //       await _firestore.runTransaction((transaction) async {
-  //   //         final snapshot = await transaction.get(candidateRef);
-  //   //         if (snapshot.exists) {
-  //   //           final currentCount = snapshot.get('voteCount') ?? 0;
-  //   //           transaction.update(candidateRef, {'voteCount': currentCount + 1});
-  //   //         }
-  //   //       });
-  //   //
-  //   //       await _updateVoterStatus();
-  //   //       setState(() {
-  //   //         _statusMessage = "Votes submitted successfully!";
-  //   //       });
-  //   //
-  //   //       showDialog(
-  //   //         context: context,
-  //   //         builder: (context) {
-  //   //           return AlertDialog(
-  //   //             title: const Text('Vote Complete'),
-  //   //             content: Text(
-  //   //                 'Thank you for your vote.\nResults will be published at $startTime.'),
-  //   //             actions: [
-  //   //               TextButton(
-  //   //                 onPressed: () => Navigator.pop(context),
-  //   //                 child: const Text('Ok'),
-  //   //               ),
-  //   //             ],
-  //   //           );
-  //   //         },
-  //   //       );
-  //   //     }
-  //   //   }
-  //   // } catch (e) {
-  //   //   setState(() {
-  //   //     _statusMessage = "Error submitting votes: $e";
-  //   //   });
-  //   // }
-  //
-  //   try {
-  //     final pollDoc = await _firestore.collection('polls').doc(widget.pollId).get();
-  //     if (!pollDoc.exists) {
-  //       setState(() {
-  //         _statusMessage = "Poll not found.";
-  //       });
-  //       return;
-  //     }
-  //
-  //     final pollData = pollDoc.data();
-  //     if (pollData == null || pollData['positions'] == null) {
-  //       setState(() {
-  //         _statusMessage = "Poll data is invalid.";
-  //       });
-  //       return;
-  //     }
-  //
-  //     final positions = List<Map<String, dynamic>>.from(pollData['positions']);
-  //     for (var position in _selectedCandidates.keys) {
-  //       final candidateId = _selectedCandidates[position];
-  //       if (candidateId != null) {
-  //         final positionIndex = positions.indexWhere(
-  //               (pos) => pos['positionTitle'] == position,
-  //         );
-  //
-  //         if (positionIndex == -1) {
-  //           setState(() {
-  //             _statusMessage = "Position '$position' not found.";
-  //           });
-  //           return;
-  //         }
-  //
-  //         final positionDocId = positionIndex.toString();
-  //         final candidateRef = _firestore
-  //             .collection('polls')
-  //             .doc(widget.pollId)
-  //             .collection('positions')
-  //             .doc(positionDocId)
-  //             .collection('candidates')
-  //             .doc(candidateId);
-  //
-  //         await _firestore.runTransaction((transaction) async {
-  //           final candidateSnapshot = await transaction.get(candidateRef);
-  //           if (candidateSnapshot.exists) {
-  //             final currentVoteCount = candidateSnapshot.get('voteCount') ?? 0;
-  //             transaction.update(candidateRef, {'voteCount': currentVoteCount + 1});
-  //           } else {
-  //             throw Exception("Candidate not found.");
-  //           }
-  //         });
-  //       } else {
-  //         setState(() {
-  //           _statusMessage = "Invalid candidate selection for '$position'.";
-  //         });
-  //         return;
-  //       }
-  //     }
-  //
-  //     await _updateVoterStatus();
-  //     setState(() {
-  //       _statusMessage = "Votes submitted successfully!";
-  //     });
-  //
-  //     showDialog(
-  //       context: context,
-  //       builder: (context) {
-  //         return AlertDialog(
-  //           title: const Text('Vote Complete'),
-  //           content: const Text('Thank you for voting!'),
-  //           actions: [
-  //             TextButton(
-  //               onPressed: () => Navigator.pop(context),
-  //               child: const Text('OK'),
-  //             ),
-  //           ],
-  //         );
-  //       },
-  //     );
-  //   } catch (e) {
-  //     setState(() {
-  //       _statusMessage = "Error submitting votes: $e";
-  //     });
-  //   }
-  //
-  // }
+
 
   Future<void> _submitVotes(DateTime startTime, DateTime endTime) async {
     final now = DateTime.now();
@@ -486,6 +309,9 @@ class _CastVotePageState extends State<CastVotePage> {
                             ),
                           ),
                           const SizedBox(height: 12),
+
+                          //showing candidates main khela
+
                           ...candidates.map((candidate) {
                             final candidateID = candidate['candidateId'] ?? '';
                             final candidateName = candidate['name'] ?? 'Unknown';
@@ -496,7 +322,13 @@ class _CastVotePageState extends State<CastVotePage> {
                               onTap: status == "Running"
                                   ? () {
                                 setState(() {
-                                  _selectedCandidates[positionTitle] = candidateID;
+                                  if (isSelected) {
+                                    // Deselect if already selected
+                                    _selectedCandidates.remove(positionTitle);
+                                  } else {
+                                    // Select the candidate
+                                    _selectedCandidates[positionTitle] = candidateID;
+                                  }
                                 });
                               }
                                   : null,
@@ -541,6 +373,9 @@ class _CastVotePageState extends State<CastVotePage> {
                               ),
                             );
                           }).toList(),
+
+                          // main khela sesh
+
                         ],
                       );
                     },

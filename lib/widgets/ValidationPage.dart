@@ -83,13 +83,21 @@ class _ValidateVoterPageState extends State<ValidateVoterPage> {
 
       // Token validation
       if (voter['uniqueId'] == token) {
-        setState(() {
-          // _statusMessage = "Validation successful!";
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CastVotePage(pollId: pollId, mail: email, token: token)),
-          );
-        });
+        if(!voter['hasVoted']){
+          setState(() {
+            // _statusMessage = "Validation successful!";
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CastVotePage(pollId: pollId, mail: email, token: token)),
+            );
+          });
+        }
+        else{
+           setState(() {
+             _statusMessage = "Your vote has already completed";
+           });
+        }
+
       } else {
         setState(() {
           _statusMessage = "Invalid token.";

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:OneVote/widgets/main.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -170,12 +171,20 @@ class _CastVotePageState extends State<CastVotePage> {
         _statusMessage = "Votes submitted successfully!";
       });
 
+      await Future.delayed(Duration(seconds: 1));
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomeActivity()),
+      );
+
+
       showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: const Text('Vote Complete'),
-            content: const Text('Thank you for voting!'),
+            content: Text("Thank you for voting!\nResult will be published at ${DateFormat.yMMMd().add_jm().format(endTime)}"),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),

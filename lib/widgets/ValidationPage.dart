@@ -61,32 +61,6 @@ class _ValidateVoterPageState extends State<ValidateVoterPage> {
         return;
       }
 
-      // Poll poll = Poll.fromMap(data);
-
-      // Voter? voter;
-      // for (var v in poll.voterList) {
-      //   if (v.voterId == email) {
-      //     voter = v;
-      //     break;
-      //   }
-      // }
-
-      // if (voter == null) {
-      //   setState(() {
-      //     _statusMessage = "Email not found in the voter list.";
-      //   });
-      //   return;
-      // }
-
-      // if (token == voter.voterId) {
-      //   setState(() {
-      //     _statusMessage = "Validation successful!";
-      //   });
-      // } else {
-      //   setState(() {
-      //     _statusMessage = "Invalid token.";
-      //   });
-      // }
 
       // Directly query email and uniqueId from voterList
       final List<dynamic> voterList = data['voterList'] ?? [];
@@ -113,7 +87,7 @@ class _ValidateVoterPageState extends State<ValidateVoterPage> {
           // _statusMessage = "Validation successful!";
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CastVotePage(pollId: pollId,)),
+            MaterialPageRoute(builder: (context) => CastVotePage(pollId: pollId, mail: email, token: token)),
           );
         });
       } else {

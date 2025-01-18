@@ -81,9 +81,8 @@ class _HomeActivityState extends State<HomeActivity> {
       
   // If there are paid polls, sort them by createdAt in descending order
   if (paidPolls.isNotEmpty) {
-    paidPolls.sort((a, b) => b['createdAt'].compareTo(a['createdAt']));
+    paidPolls.sort((a, b) => b['endTime'].compareTo(a['endTime']));
   }  // Filter and sort only the polls where isPayment == 1
-  
   // Filter polls based on the search query
   if (_searchQuery.isNotEmpty) {
     paidPolls = paidPolls.where((poll) {

@@ -114,7 +114,29 @@ Future<void> sendEmailToVoter(Map<String, Object> voterMap, String title, String
     // ..bccRecipients.add(Address('bccAddress@example.com'))
     ..subject = 'Your Vote Unique ID'
     ..text = 'Dear Voter,\n$name has created a poll named $title and you are requested to vote.\n\nYour unique ID for the poll is: $token\nPlease use this ID to cast your vote.\n\nThank you!';
-    // ..html = "<h1>Test</h1>\n<p>Hey! Here's some HTML content</p>";
+    message.html = '''
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <p style="font-size: 16px;">Dear Voter,</p>
+        <p style="font-size: 16px;">We are excited to inform you that <strong>$name</strong> has created a poll named <strong>$title</strong>, and your participation is requested!</p>
+        <p style="font-size: 16px;">Your unique ID for the poll is: <strong style="color: #4CAF50; font-size: 18px;">$token</strong></p>
+        <p style="font-size: 16px;">Please use this ID to cast your vote and make your voice heard.</p>
+        <p>If you haven't downloaded the app yet, please do so by clicking the button below:</p>
+        <p style="text-align: center; margin: 20px 0;">
+        <a href="https://drive.google.com/file/d/1Wz5p-OMMdhJaymjTWEKdlrioiuFdmC9c/view?usp=sharing" 
+           target="_blank" 
+           style="text-decoration: none;">
+            <button style="padding: 12px 24px; font-size: 16px; background-color: #0068ff; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                Download App
+            </button>
+        </a>
+        </p>
+        <br>
+        <p style="font-size: 16px;">Thank you for your valuable time and contribution!</p>
+        <p style="font-size: 16px; color: #777;">If you have any questions or need assistance, feel free to contact us at: 
+            <a href="mailto:onevote.official@gmail.com" style="color: #0068ff; text-decoration: none;"><strong>onevote.official@gmail.com</strong></a>
+        </p>
+      </div>
+      ''';
 
   try {
     final sendReport = await send(message, smtpServer);

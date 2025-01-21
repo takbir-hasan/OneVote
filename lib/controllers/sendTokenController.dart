@@ -122,7 +122,7 @@ Future<void> sendEmailToVoter(Map<String, Object> voterMap, String title, String
         <p style="font-size: 16px;">Please use this ID to cast your vote and make your voice heard.</p>
         <p>If you haven't downloaded the app yet, please do so by clicking the button below:</p>
         <p style="text-align: center; margin: 20px 0;">
-        <a href="https://drive.google.com/file/d/1Wz5p-OMMdhJaymjTWEKdlrioiuFdmC9c/view?usp=sharing" 
+        <a href="https://drive.google.com/drive/folders/1v1rOHJdxw3YIL0tqG8OgTIzi1aazQoZJ?usp=sharing" 
            target="_blank" 
            style="text-decoration: none;">
             <button style="padding: 12px 24px; font-size: 16px; background-color: #0068ff; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">

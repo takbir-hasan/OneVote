@@ -78,8 +78,6 @@ class _CastVotePageState extends State<CastVotePage> {
     }
   }
 
-
-
   Future<void> _submitVotes(DateTime startTime, DateTime endTime) async {
     final now = DateTime.now();
 
@@ -98,7 +96,6 @@ class _CastVotePageState extends State<CastVotePage> {
     }
 
     try {
-      // Fetch poll document
       final pollDoc = await _firestore.collection('polls').doc(widget.pollId).get();
 
       if (!pollDoc.exists) {
@@ -177,7 +174,6 @@ class _CastVotePageState extends State<CastVotePage> {
         context,
         MaterialPageRoute(builder: (context) => HomeActivity()),
       );
-
 
       showDialog(
         context: context,
@@ -323,24 +319,20 @@ class _CastVotePageState extends State<CastVotePage> {
 
                           ...candidates.map((candidate) {
                             final candidateID = candidate['candidateId'] ?? '';
-                            final candidateName = candidate['name'] ?? 'Unknown';
-                            final candidateImage = candidate['image'] ?? '';
+                            final candidateName = candidate['name'] ?? 'Candidate Name';
+                            final candidateImage = candidate['profilePic'] ?? '';
                             final isSelected = _selectedCandidates[positionTitle] == candidateID;
 
                             return GestureDetector(
-                              onTap: status == "Running"
-                                  ? () {
+                              onTap: () {
                                 setState(() {
                                   if (isSelected) {
-                                    // Deselect if already selected
                                     _selectedCandidates.remove(positionTitle);
                                   } else {
-                                    // Select the candidate
                                     _selectedCandidates[positionTitle] = candidateID;
                                   }
                                 });
-                              }
-                                  : null,
+                              },
                               child: Container(
                                 margin: const EdgeInsets.symmetric(vertical: 8),
                                 padding: const EdgeInsets.all(12),
@@ -382,30 +374,25 @@ class _CastVotePageState extends State<CastVotePage> {
                               ),
                             );
                           }).toList(),
-
-                          // main khela sesh
-
                         ],
                       );
                     },
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: _selectedCandidates.isNotEmpty
-                      ? () => _submitVotes(startTime, endTime)
-                      : null, // Button disabled if no votes are selected
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _selectedCandidates.isNotEmpty ? Colors.lightBlue : Colors.grey, // Color changes dynamically
+                if (status == "Running")
+                  ElevatedButton(
+                    onPressed: () {
+                      _submitVotes(startTime, endTime);
+                    },
+                    child: const Text("Submit Votes"),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   ),
-                  child: const Text("Submit Votes", style: TextStyle(color: Colors.black)),
-                ),
-
                 if (_statusMessage.isNotEmpty)
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.only(top: 16.0),
                     child: Text(
                       _statusMessage,
-                      style: TextStyle(color: Colors.red.shade700, fontWeight: FontWeight.bold),
+                      style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                     ),
                   ),
               ],
@@ -415,5 +402,4 @@ class _CastVotePageState extends State<CastVotePage> {
       ),
     );
   }
-
 }

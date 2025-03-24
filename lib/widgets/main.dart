@@ -151,12 +151,12 @@ class _HomeActivityState extends State<HomeActivity> {
         // ),
         actions: [
           // IconButton(onPressed: () {}, icon: const Icon(Icons.comment)),
-          IconButton(
-              onPressed: () {
-                 mySnackBar("Searching...", context);
-
-              },
-              icon: const Icon(Icons.search)),
+          // IconButton(
+          //     onPressed: () {
+          //        mySnackBar("Searching...", context);
+          //
+          //     },
+          //     icon: const Icon(Icons.search)),
           IconButton(
               onPressed: () {
                 // mySnackBar("Notification", context);
